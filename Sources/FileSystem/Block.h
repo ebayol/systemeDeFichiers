@@ -1,38 +1,53 @@
 
+
 /* #################################################################################################### */
 /* ###                                            BLOCKS                                            ### */
 /* #################################################################################################### */
-#ifndef BLOCKS_H_
-#define BLOCKS_H_
+#ifndef BLOCK_H_
+#define BLOCK_H_
 
-// Dependances Standards:
-#include "../includes.h"
-
-// Dependances Internes:
-#include "Block.h"
+// Dependances standards:
+#include "../Includes.h"
 
 /* **************************************************************************************************** */
 /* ***                                        TYPE DEFINITION                                       *** */
 /* **************************************************************************************************** */
 
-typedef struct BLOCKS {
+#define BLOCK_LENGTH 128
+#define BLOCK_SIZE   4096
 
-	int fileDescriptor;
-}
-Blocks;
+typedef struct {
+
+	union {
+		uint32_t data[ BLOCK_LENGTH ];
+		adress adressNextEmpty;
+	}
+
+} Block;
 
 /* **************************************************************************************************** */
 /* ***                                   CONSTRUCTOR / DESTRUCTOR                                   *** */
 /* **************************************************************************************************** */
 
-Blocks* AllocateBlocks ( void );
-void    FreeBlocks     ( Blocks* this );
+Block* b_Allocate ( void );
+void   b_Free     ( Block* this );
 
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */
 /* **************************************************************************************************** */
 
-Block getBlockAt( Blocks* this, index_t index );
+size            b_getLength          ( Block* this );
+adress          b_getAdressNextEmpty ( Block* this );
+const uint32_t* b_getData            ( Block* this );
+uint32_t        b_getDataAt          ( Block* this, adress id );
 
-#endif /* FIN BLOCKS_H_ */
+/* **************************************************************************************************** */
+/* ***                                            MUTATOR                                           *** */
+/* **************************************************************************************************** */
+
+Block* b_setAdressNextEmpty ( Block* this, adress adressNextEmpty );
+Block* b_setData            ( Block* this, const uint32_t* data );
+Block* b_setDataAt          ( Block* this, adress index, uint32_t data );
+
+#endif /* FIN BLOCK_H_ */
 /* #################################################################################################### */

@@ -6,13 +6,14 @@
 
 // Dependances standards:
 #include <stdint.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 // Type communs:
-typedef uint32_t index_t;
-typedef unsigned int size_t;
+typedef uint32_t adress;
+typedef unsigned int size;
 
 #endif /* INCLUDES_H */
 /* #################################################################################################### */

@@ -1,8 +1,8 @@
-#include "includes.h"
+#include "Includes.h"
 #include "commands.h"
 
 int 
-do_help (fs_t * fs, int argc, char *argv[])
+do_help (FileSystem * fs, int argc, char *argv[])
 {
     printf (
 	    "The interface supports the following commands:\n\n"
@@ -55,36 +55,21 @@ print_args (int argc, char *argv[])
 }
 
 int 
-do_open (fs_t * fs, int argc, char *argv[])
+do_open (FileSystem * fs, int argc, char *argv[])
 {
     print_args (argc, argv);
     return 0;
 }
 
 int 
-do_close (fs_t * fs, int argc, char *argv[])
+do_close (FileSystem * fs, int argc, char *argv[])
 {
     print_args (argc, argv);
     return 0;
 }
 
 int 
-do_stat (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-
-int 
-do_creat (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_link (fs_t * fs, int argc, char *argv[])
+do_stat (FileSystem * fs, int argc, char *argv[])
 {
     print_args (argc, argv);
     return 0;
@@ -92,119 +77,14 @@ do_link (fs_t * fs, int argc, char *argv[])
 
 
 int 
-do_unlink (fs_t * fs, int argc, char *argv[])
+do_creat (FileSystem * fs, int argc, char *argv[])
 {
     print_args (argc, argv);
     return 0;
 }
 
 int 
-do_cd (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_pwd (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_mkdir (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_rmdir (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_read (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_write (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_lseek (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_flush (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_move (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_cat (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_info_openfiles (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_info_inodes (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_info_freeblocks (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_info_cache (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_flush_cache (fs_t * fs, int argc, char *argv[])
-{
-    print_args (argc, argv);
-    return 0;
-}
-
-int 
-do_ls (fs_t * fs, int argc, char *argv[])
+do_link (FileSystem * fs, int argc, char *argv[])
 {
     print_args (argc, argv);
     return 0;
@@ -212,7 +92,127 @@ do_ls (fs_t * fs, int argc, char *argv[])
 
 
 int 
-do_copy (fs_t * fs, int argc, char *argv[])
+do_unlink (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_cd (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_pwd (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_mkdir (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_rmdir (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_read (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_write (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_lseek (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_flush (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_move (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_cat (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_info_openfiles (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_info_inodes (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_info_freeblocks (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_info_cache (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_flush_cache (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+int 
+do_ls (FileSystem * fs, int argc, char *argv[])
+{
+    print_args (argc, argv);
+    return 0;
+}
+
+
+int 
+do_copy (FileSystem * fs, int argc, char *argv[])
 {
     print_args (argc, argv);
     return 0;

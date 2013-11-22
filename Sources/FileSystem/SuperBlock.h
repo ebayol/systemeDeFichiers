@@ -7,34 +7,35 @@
 #define SUPERBLOCK_H_
 
 // Dependances standards:
-#include "../includes.h"
+#include "../Includes.h"
 
 /* **************************************************************************************************** */
 /* ***                                        TYPE DEFINITION                                       *** */
 /* **************************************************************************************************** */
 
-typedef struct FS_SUPERBLOCK_S {
+typedef struct {
 
-	size_t size_block;
-	size_t nb_blocks;
-	size_t nb_blocks_used;
+	size size_block;
+	size nb_blocks;
+	size nb_blocks_used;
 
-	size_t size_inode;
-	size_t nb_inodes;
-	size_t nb_inodes_used;
+	size size_inode;
+	size nb_inodes;
+	size nb_inodes_used;
 
-	index_t free_block;
-	index_t free_inodes;
+	adress free_block;
+	adress free_inodes;
 }
-fs_superblock_t;
+SuperBlock;
 
 /* **************************************************************************************************** */
 /* ***                                   CONSTRUCTOR / DESTRUCTOR                                   *** */
 /* **************************************************************************************************** */
 
-fs_superblock_t* AllocateSuperblock ( size_t nb_blocks, size_t size_blocks,
-		                             size_t nb_inodes, size_t size_inode );
-void             FreeSuperblock     ( fs_superblock_t* this );
+SuperBlock* sb_Allocate_Default ( void );
+SuperBlock* sb_Allocate         ( size nb_blocks, size size_blocks,
+		                          size nb_inodes, size size_inode );
+void        sb_Free             ( SuperBlock* this );
 
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */
@@ -42,21 +43,21 @@ void             FreeSuperblock     ( fs_superblock_t* this );
 
 // Blocks :
 
-size_t getSizeBlock       ( fs_superblock_t* this );
-size_t getNbBlocks        ( fs_superblock_t* this );
-size_t getNbBlocksUsed    ( fs_superblock_t* this );
-size_t getNbBlocksFree    ( fs_superblock_t* this );
+size sb_getSizeBlock       ( SuperBlock* this );
+size sb_getNbBlocks        ( SuperBlock* this );
+size sb_getNbBlocksUsed    ( SuperBlock* this );
+size sb_getNbBlocksFree    ( SuperBlock* this );
 
-index_t getFirstFreeBlock ( fs_superblock_t* this );
+adress sb_getFirstFreeBlock ( SuperBlock* this );
 
 // I-Nodes
 
-size_t getInodeSize       ( fs_superblock_t* this );
-size_t getNbInodes        ( fs_superblock_t* this );
-size_t getNbInodesUsed    ( fs_superblock_t* this );
-size_t getNbInodesFree    ( fs_superblock_t* this );
+size sb_getInodeSize       ( SuperBlock* this );
+size sb_getNbInodes        ( SuperBlock* this );
+size sb_getNbInodesUsed    ( SuperBlock* this );
+size sb_getNbInodesFree    ( SuperBlock* this );
 
-index_t getFirstFreeInode ( fs_superblock_t* this );
+adress sb_getFirstFreeInode ( SuperBlock* this );
 
 /* **************************************************************************************************** */
 /* ***                                            MUTATOR                                           *** */
@@ -64,19 +65,19 @@ index_t getFirstFreeInode ( fs_superblock_t* this );
 
 // Blocks :
 
-fs_superblock_t* setSizeBlock      ( fs_superblock_t* this, size_t size_block );
-fs_superblock_t* setNbBlocks       ( fs_superblock_t* this, size_t nb_blocks );
-fs_superblock_t* setNbBlocksUsed   ( fs_superblock_t* this, size_t nb_blocks_used );
+SuperBlock* sb_setSizeBlock      ( SuperBlock* this, size size_block );
+SuperBlock* sb_setNbBlocks       ( SuperBlock* this, size nb_blocks );
+SuperBlock* sb_setNbBlocksUsed   ( SuperBlock* this, size nb_blocks_used );
 
-fs_superblock_t* setFirstFreeBlock ( fs_superblock_t* this, index_t free_block );
+SuperBlock* sb_setFirstFreeBlock ( SuperBlock* this, adress free_block );
 
 // I-Nodes
 
-fs_superblock_t* setInodeSize      ( fs_superblock_t* this, size_t size_inode );
-fs_superblock_t* setNbInodes       ( fs_superblock_t* this, size_t nb_inodes );
-fs_superblock_t* setNbInodesUsed   ( fs_superblock_t* this, size_t nb_inodes_used );
+SuperBlock* sb_setInodeSize      ( SuperBlock* this, size size_inode );
+SuperBlock* sb_setNbInodes       ( SuperBlock* this, size nb_inodes );
+SuperBlock* sb_setNbInodesUsed   ( SuperBlock* this, size nb_inodes_used );
 
-fs_superblock_t* setFirstFreeInode ( fs_superblock_t* this, index_t free_inodes );
+SuperBlock* sb_setFirstFreeInode ( SuperBlock* this, adress free_inodes );
 
-#endif /* SUPERBLOCK_H_ */
+#endif /* FIN SUPERBLOCK_H_ */
 /* #################################################################################################### */

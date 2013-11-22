@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <string.h>
+#include "Includes.h"
 #include "commands.h"
 
 #define MAX_LINE_SIZE  255
@@ -17,7 +13,7 @@ typedef struct
     const char *command;
     int nb_params;
     int nb_opt_params;
-    int (*function) (fs_t *, int, char **);
+    int (*function) (FileSystem*, int, char **);
 } command;
 
 
@@ -92,17 +88,14 @@ extract_args (commandline_t cmd, int *argc, argv_t argv)
 }
 
 
-void 
-launch_interface (fs_t * fs)
-{
+void launch_interface ( FileSystem* fs ) {
+
     commandline_t buffer;
 
-    printf ("\n0> ");
-    fflush (stdout);
+    printf ( "\n0> " );
+    fflush ( stdout );
 
-
-
-    while (fgets (buffer, sizeof buffer, stdin))
+    while ( fgets (buffer, sizeof buffer, stdin) )
     {
 	int ret = 1;
 	argv_t argv;
@@ -124,7 +117,7 @@ launch_interface (fs_t * fs)
 	    }
 
 	    bool found = false;
-	    for (size_t i = 0; i < sizeof table / sizeof *table; i++)
+	    for (size i = 0; i < sizeof table / sizeof *table; i++)
 	    {
 			if (!strcmp (argv[0], table[i].command))
 			{
@@ -152,16 +145,16 @@ main (int argc, char *argv[])
 {
     if (argc == 6 && !strcmp (argv[1], "format"))
     {
-		index_t nb_b = atoi (argv[3]);
-		index_t size_b = atoi (argv[4]);
-		index_t nb_i = atoi (argv[5]);
+		adress nb_b = atoi (argv[3]);
+		adress size_b = atoi (argv[4]);
+		adress nb_i = atoi (argv[5]);
 		return fs_format (argv[2], nb_b, size_b, nb_i) == -1;
     }
 
     if ((argc == 3 || argc == 4) && !strcmp (argv[1], "mount"))
     {
-		fs_t fs;
-		size_t size_cache = 0;
+    	FileSystem fs;
+		size size_cache = 0;
 		if (argc == 4)
 			size_cache = atoi (argv[3]);
 
