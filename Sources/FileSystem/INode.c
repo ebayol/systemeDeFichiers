@@ -27,7 +27,7 @@ INode* in_AllocateEmpty ( void ) {
 	return this;
 }
 
-INode* in_Allocate ( adress type, adress nb_links, adress file_size, adress* indexFreeBlocks ) {
+INode* in_Allocate ( u_int type, u_int nb_links, u_int file_size, u_int* indexFreeBlocks ) {
 
 	// Make the pointer:
 	INode* this = (INode*) malloc( sizeof( INode ) );
@@ -66,27 +66,27 @@ int in_getType ( INode* this ) {
 	return this->type;
 }
 
-adress in_getNbLinks ( INode* this ) {
+u_int in_getNbLinks ( INode* this ) {
 	return this->nb_links;
 }
 
-adress in_getFileSize ( INode* this ) {
+u_int in_getFileSize ( INode* this ) {
 	return this->file_size;
 }
 
-const adress* in_getDirectBlocksAdresses ( INode* this ) {
+const u_int* in_getDirectBlocksAdresses ( INode* this ) {
 	return this->directBlocksAdresses;
 }
 
-adress in_getDirectBlockAdressAt ( INode* this, adress index ) {
+u_int in_getDirectBlockAdressAt ( INode* this, u_int index ) {
 	return in_getDirectBlocksAdresses( this )[ index ];
 }
 
-const adress* in_getIndirectBlocksAdresses ( INode* this ) {
+const u_int* in_getIndirectBlocksAdresses ( INode* this ) {
 	return this->IndirectBlocksAdresses;
 }
 
-adress in_getIndirectBlocksAdressAt ( INode* this, adress index ) {
+u_int in_getIndirectBlocksAdressAt ( INode* this, u_int index ) {
 	return in_getIndirectBlocksAdresses( this )[ index ];
 }
 
@@ -94,40 +94,40 @@ adress in_getIndirectBlocksAdressAt ( INode* this, adress index ) {
 /* ***                                            MUTATOR                                           *** */
 /* **************************************************************************************************** */
 
-INode* in_setType ( INode* this,adress type ) {
+INode* in_setType ( INode* this,u_int type ) {
 	this->type = type;
 	return this;
 }
 
-INode* in_setNbLinks ( INode* this,adress nb_links ) {
+INode* in_setNbLinks ( INode* this,u_int nb_links ) {
 	this->nb_links = nb_links;
 	return this;
 }
 
-INode* in_setFileSize ( INode* this,adress file_size ) {
+INode* in_setFileSize ( INode* this,u_int file_size ) {
 	this->file_size = file_size;
 	return this;
 }
 
-INode* in_setDirectBlockAdressAt ( INode* this, adress index, adress indexDirectBlock ) {
+INode* in_setDirectBlockAdressAt ( INode* this, u_int index, u_int indexDirectBlock ) {
 	this->directBlocksAdresses[ index ] = indexDirectBlock;
 	return this;
 }
 
-INode* in_setDirectBlocksAdresses ( INode* this, adress* indexDirectBlocks ) {
-	for ( adress index = 0 ; index < NB_DIRECT_BLOCKS ; ++index ) {
+INode* in_setDirectBlocksAdresses ( INode* this, u_int* indexDirectBlocks ) {
+	for ( u_int index = 0 ; index < NB_DIRECT_BLOCKS ; ++index ) {
 		in_setDirectBlockAdressAt( this, index, indexDirectBlocks[ index ] );
 	}
 	return this;
 }
 
-INode* in_setIndirectBlockAdressAt ( INode* this, adress index, adress indexIndirectBlock  ) {
+INode* in_setIndirectBlockAdressAt ( INode* this, u_int index, u_int indexIndirectBlock  ) {
 	this->IndirectBlocksAdresses[ index ] = indexIndirectBlock;
 	return this;
 }
 
-INode* in_setIndirectBlocksAdresses ( INode* this, adress* indexIndirectBlocks ) {
-	for ( adress index = 0 ; index < NB_INDIRECT_BLOCKS ; ++index ) {
+INode* in_setIndirectBlocksAdresses ( INode* this, u_int* indexIndirectBlocks ) {
+	for ( u_int index = 0 ; index < NB_INDIRECT_BLOCKS ; ++index ) {
 		in_setIndirectBlockAdressAt( this, index, indexIndirectBlocks[ index ] );
 	}
 	return this;

@@ -25,8 +25,8 @@ typedef struct {
 	size nb_links;
 	size file_size;
 
-	adress directBlocksAdresses   [ NB_DIRECT_BLOCKS ];
-	adress IndirectBlocksAdresses [ NB_INDIRECT_BLOCKS ];
+	u_int directBlocksAdresses   [ NB_DIRECT_BLOCKS ];
+	u_int IndirectBlocksAdresses [ NB_INDIRECT_BLOCKS ];
 }
 INode;
 
@@ -35,7 +35,7 @@ INode;
 /* **************************************************************************************************** */
 
 INode* in_AllocateEmpty ( void );
-INode* in_Allocate      ( adress type, adress nb_links, adress file_size, adress* indexFreeBlocks );
+INode* in_Allocate      ( u_int type, u_int nb_links, u_int file_size, u_int* indexFreeBlocks );
 
 void in_Free ( INode* this );
 
@@ -44,28 +44,28 @@ void in_Free ( INode* this );
 /* **************************************************************************************************** */
 
 int    in_getType     ( INode* this );
-adress in_getNbLinks  ( INode* this );
-adress in_getFileSize ( INode* this );
+u_int in_getNbLinks  ( INode* this );
+u_int in_getFileSize ( INode* this );
 
-const adress* in_getDirectBlocksAdresses ( INode* this );
-adress        in_getDirectBlockAdressAt  ( INode* this, adress index );
+const u_int* in_getDirectBlocksAdresses ( INode* this );
+u_int        in_getDirectBlockAdressAt  ( INode* this, u_int index );
 
-const adress* in_getIndirectBlocksAdresses ( INode* this );
-adress        in_getIndirectBlocksAdressAt ( INode* this, adress index );
+const u_int* in_getIndirectBlocksAdresses ( INode* this );
+u_int        in_getIndirectBlocksAdressAt ( INode* this, u_int index );
 
 /* **************************************************************************************************** */
 /* ***                                            MUTATOR                                           *** */
 /* **************************************************************************************************** */
 
-INode* in_setType     ( INode* this, adress type );
-INode* in_setNbLinks  ( INode* this, adress nb_links );
-INode* in_setFileSize ( INode* this, adress file_size );
+INode* in_setType     ( INode* this, u_int type );
+INode* in_setNbLinks  ( INode* this, u_int nb_links );
+INode* in_setFileSize ( INode* this, u_int file_size );
 
-INode* in_setDirectBlockAdressAt  ( INode* this, adress index, adress indexDirectBlock );
-INode* in_setDirectBlocksAdresses ( INode* this, adress* indexDirectBlocks );
+INode* in_setDirectBlockAdressAt  ( INode* this, u_int index, u_int indexDirectBlock );
+INode* in_setDirectBlocksAdresses ( INode* this, u_int* indexDirectBlocks );
 
-INode* in_setIndirectBlockAdressAt  ( INode* this, adress index, adress indexIndirectBlock  );
-INode* in_setIndirectBlocksAdresses ( INode* this, adress* indexIndirectBlocks );
+INode* in_setIndirectBlockAdressAt  ( INode* this, u_int index, u_int indexIndirectBlock  );
+INode* in_setIndirectBlocksAdresses ( INode* this, u_int* indexIndirectBlocks );
 
 #endif /* FIN INODE_H_ */
 /* #################################################################################################### */

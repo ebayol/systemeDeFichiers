@@ -12,7 +12,7 @@
 #include <string.h>
 
 // Type communs:
-typedef uint32_t adress;
+typedef uint32_t u_int;
 typedef unsigned int size;
 
 #endif /* INCLUDES_H */

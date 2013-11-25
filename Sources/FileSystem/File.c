@@ -43,7 +43,7 @@ SuperBlock* f_readSuperBlock ( FILE* ptrFile ) {
 	return ptrSuperblock;
 }
 
-INode* f_readINodeAt ( FILE* ptrFile, adress indexINode ) {
+INode* f_readINodeAt ( FILE* ptrFile, u_int indexINode ) {
 
 	// Place in the file:
 	fseek( ptrFile, indexINode, SEEK_SET );
@@ -62,7 +62,7 @@ INode* f_readINodeAt ( FILE* ptrFile, adress indexINode ) {
 	return ptrINode;
 }
 
-Block* f_readBlockAt ( FILE* ptrFile, adress index ) {
+Block* f_readBlockAt ( FILE* ptrFile, u_int index ) {
 
 	// Place in the file:
 	fseek( ptrFile, index, SEEK_SET );
@@ -100,7 +100,7 @@ FILE* f_writeSuperblock ( FILE* ptrFile, SuperBlock* ptrSuperblock ) {
 	return ptrFile;
 }
 
-FILE* f_writeBlockAt    ( FILE* ptrFile, adress index, Block* ptrBlock ) {
+FILE* f_writeBlockAt    ( FILE* ptrFile, u_int index, Block* ptrBlock ) {
 
 	// Place in the file:
 	fseek( ptrFile, index, SEEK_SET );

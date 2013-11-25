@@ -145,9 +145,9 @@ main (int argc, char *argv[])
 {
     if (argc == 6 && !strcmp (argv[1], "format"))
     {
-		adress nb_b = atoi (argv[3]);
-		adress size_b = atoi (argv[4]);
-		adress nb_i = atoi (argv[5]);
+		u_int nb_b = atoi (argv[3]);
+		u_int size_b = atoi (argv[4]);
+		u_int nb_i = atoi (argv[5]);
 		return fs_format (argv[2], nb_b, size_b, nb_i) == -1;
     }
 

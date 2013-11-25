@@ -86,7 +86,7 @@ size sb_getNbBlocksFree    ( SuperBlock* this ) {
 	return sb_getNbBlocks( this ) - sb_getNbBlocksUsed( this );
 }
 
-adress sb_getFirstFreeBlock ( SuperBlock* this ) {
+u_int sb_getFirstFreeBlock ( SuperBlock* this ) {
 	return this->free_block;
 }
 
@@ -104,7 +104,7 @@ size sb_getNbInodesFree ( SuperBlock* this ) {
 	return sb_getNbInodes( this ) - sb_getNbInodesUsed( this );
 }
 
-adress sb_getFirstFreeInode ( SuperBlock* this ) {
+u_int sb_getFirstFreeInode ( SuperBlock* this ) {
 	return this->free_inodes;
 }
 
@@ -129,7 +129,7 @@ SuperBlock* sb_setNbBlocksUsed ( SuperBlock* this, size nb_blocks_used ) {
 	return this;
 }
 
-SuperBlock* sb_setFirstFreeBlock ( SuperBlock* this, adress free_block ) {
+SuperBlock* sb_setFirstFreeBlock ( SuperBlock* this, u_int free_block ) {
 	this->free_block = free_block;
 	return this;
 }
@@ -151,7 +151,7 @@ SuperBlock* sb_setNbInodesUsed ( SuperBlock* this, size nb_inodes_used ) {
 	return this;
 }
 
-SuperBlock* sb_setFirstFreeInode ( SuperBlock* this, adress free_inodes ) {
+SuperBlock* sb_setFirstFreeInode ( SuperBlock* this, u_int free_inodes ) {
 	this->free_inodes = free_inodes;
 	return this;
 }
