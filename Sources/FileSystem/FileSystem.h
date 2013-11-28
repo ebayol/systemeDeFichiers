@@ -28,7 +28,7 @@ FileSystem;
 
 FileSystem* fs_AllocateEmpty ( void );
 FileSystem* fs_Allocate      ( size nb_blocks, size size_blocks,
-                               size nb_inodes, size size_inode );
+                               size nb_inodes, size size_inodes );
 void        fs_Free          ( FileSystem* this );
 
 /* **************************************************************************************************** */
@@ -53,7 +53,7 @@ FileSystem* fs_setBlockAt    ( FileSystem* this, u_int index, Block* ptrBlock );
 /* ***                                          UTILISTATION                                        *** */
 /* **************************************************************************************************** */
 
-int fs_format( const char* path, u_int nb_blocks, u_int size_block, u_int nb_inodes );
+int fs_format( const char* path, u_int nb_blocks, u_int size_blocks, u_int nb_inodes );
 int fs_mount ( FileSystem* this, const char* path, size size_cache );
 int fs_umount( FileSystem* this );
 

@@ -11,13 +11,10 @@
 /* ***                                        TYPE DEFINITION                                       *** */
 /* **************************************************************************************************** */
 
-#define BLOCK_LENGTH 128
-#define BLOCK_SIZE   4096
-
 typedef struct {
 
 	union {
-		uint32_t data[ BLOCK_LENGTH ];
+		uint32_t* data;
 		u_int adressNextEmpty;
 	};
 
@@ -34,7 +31,6 @@ void   b_Free     ( Block* this );
 /* ***                                            ACCESSOR                                          *** */
 /* **************************************************************************************************** */
 
-size            b_getLength          ( Block* this );
 u_int           b_getAdressNextEmpty ( Block* this );
 const uint32_t* b_getData            ( Block* this );
 uint32_t        b_getDataAt          ( Block* this, u_int id );

@@ -1,5 +1,3 @@
-#include "FileSystem.h"
-
 /* #################################################################################################### */
 /* ###                                          FILE SYSTEM                                         ### */
 /* #################################################################################################### */
@@ -14,16 +12,33 @@
 /* **************************************************************************************************** */
 
 FileSystem* fs_AllocateEmpty ( void ) {
-	return (FileSystem*) malloc( sizeof( FileSystem ) );
+	FileSystem* this = (FileSystem*) malloc( sizeof( FileSystem ) );
+	fs_setSuperblock( this, NULL );
+	fs_setFile( this, NULL );
+	return this;
 }
 
-FileSystem* fs_Allocate ( size nb_blocks, size size_blocks,
-                          size nb_inodes, size size_inode ) {
+FileSystem* fs_Allocate ( char* discName, bool format,
+						  size nb_blocks, size size_blocks,
+                          size nb_inodes, size size_inodes ) {
 
-	FileSystem* ptrFileSystem = fs_AllocateEmpty();
-	fs_setSuperblock( ptrFileSystem, sb_Allocate( nb_blocks, size_blocks, nb_inodes, size_inode ) );
+	// Creation du pointeur:
+	FileSystem* this = fs_AllocateEmpty();
 
-	return ptrFileSystem;
+	// Creation de son superblock
+	fs_setSuperblock( this, sb_Allocate( nb_blocks, size_blocks, nb_inodes, size_inodes ) );
+
+	// Ouveture du fichier:
+	FILE* ptrDisc;
+	if ( format )
+		ptrDisc = fopen( discName, "w+" );
+	else
+		ptrDisc = fopen( discName, "r+" );
+	fs_setFile( this, ptrDisc );
+
+	// Ouverture du fichier,
+
+	return this;
 }
 
 void fs_Free ( FileSystem* this ) {
@@ -98,8 +113,11 @@ FileSystem* fs_setBlockAt ( FileSystem* this, u_int indexBlock, Block* ptrBlock 
 /* ***                                          UTILISTATION                                        *** */
 /* **************************************************************************************************** */
 
-int fs_format( const char* path, u_int nb_blocks, u_int size_block, u_int nb_inodes ) {
-	return 0;
+int fs_format( const char* discName, u_int nb_blocks, u_int size_blocks, u_int nb_inodes ) {
+
+	FileSystem ptrFileSystem = fs_Allocate( discName, true, nb_blocks, size_blocks, nb_inodes, 32 );
+
+	return (int)ptrFileSystem;
 }
 
 int fs_mount ( FileSystem* this, const char* path, size size_cache ) {
