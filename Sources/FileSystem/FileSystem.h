@@ -29,7 +29,7 @@ FileSystem;
 FileSystem* fs_AllocateEmpty ( void );
 FileSystem* fs_Allocate      ( size nb_blocks, size size_blocks,
                                size nb_inodes, size size_inodes );
-void        fs_Free          ( FileSystem* this );
+FileSystem* fs_Free          ( FileSystem* this );
 
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */

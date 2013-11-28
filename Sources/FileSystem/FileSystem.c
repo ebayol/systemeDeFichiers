@@ -18,33 +18,50 @@ FileSystem* fs_AllocateEmpty ( void ) {
 	return this;
 }
 
-FileSystem* fs_Allocate ( char* discName, bool format,
+FileSystem* fs_Allocate ( char* discName, bool clearDisc,
 						  size nb_blocks, size size_blocks,
                           size nb_inodes, size size_inodes ) {
 
 	// Creation du pointeur:
 	FileSystem* this = fs_AllocateEmpty();
+	// Verification
+	if ( this == NULL )
+		return NULL;
 
 	// Creation de son superblock
-	fs_setSuperblock( this, sb_Allocate( nb_blocks, size_blocks, nb_inodes, size_inodes ) );
+	SuperBlock* ptrSuperBlock = sb_Allocate( nb_blocks, size_blocks, nb_inodes, size_inodes );
+	// Verification
+	if ( ptrSuperBlock == NULL )
+		return fs_Free( this );
+	// Assignation
+	fs_setSuperblock( this, ptrSuperBlock );
 
 	// Ouveture du fichier:
 	FILE* ptrDisc;
-	if ( format )
+	if ( clearDisc )
 		ptrDisc = fopen( discName, "w+" );
 	else
 		ptrDisc = fopen( discName, "r+" );
+	// Verification
+	if ( ptrDisc == NULL )
+		return fs_Free( this );
+	// Assignation
 	fs_setFile( this, ptrDisc );
 
-	// Ouverture du fichier,
-
+	// Retour:
 	return this;
 }
 
-void fs_Free ( FileSystem* this ) {
-	sb_Free( fs_getSuperblock( this ) );
-	free( this );
-	this = NULL;
+FileSystem* fs_Free ( FileSystem* this ) {
+	if ( this != NULL ) {
+		if ( fs_getSuperblock( this ) != NULL )
+			sb_Free( fs_getSuperblock( this ) );
+		if ( fs_getFile( this ) != NULL )
+			fclose( fs_getFile( this ) );
+		free( this );
+		this = NULL;
+	}
+	return this;
 }
 
 /* **************************************************************************************************** */
@@ -60,10 +77,14 @@ FILE* fs_getFile ( FileSystem* this ) {
 }
 
 INode* fs_getInodeAt ( FileSystem* this, u_int index ) {
+	if ( fs_getFile(this) == NULL )
+		return NULL;
 	return f_readINodeAt( fs_getFile(this), index );
 }
 
 Block* fs_getBlockAt ( FileSystem* this, u_int index ) {
+	if ( fs_getFile(this) == NULL )
+		return NULL;
 	return f_readBlockAt( fs_getFile(this), index );
 }
 
@@ -96,6 +117,8 @@ FileSystem* fs_setFile ( FileSystem* this, FILE* ptrFile ) {
 }
 
 FileSystem* fs_setInodeAt ( FileSystem* this, u_int indexINode, INode* ptrInode ) {
+	if ( fs_getFile(this) == NULL )
+		return this;
 	// Write in file:
 	f_writeINodeAt( fs_getFile( this ), indexINode, ptrInode );
 	// Return fs:
@@ -103,6 +126,8 @@ FileSystem* fs_setInodeAt ( FileSystem* this, u_int indexINode, INode* ptrInode 
 }
 
 FileSystem* fs_setBlockAt ( FileSystem* this, u_int indexBlock, Block* ptrBlock ) {
+	if ( fs_getFile(this) == NULL )
+		return this;
 	// Write in file:
 	f_writeBlockAt( fs_getFile( this ), indexBlock, ptrBlock );
 	// Return fs:
@@ -116,8 +141,11 @@ FileSystem* fs_setBlockAt ( FileSystem* this, u_int indexBlock, Block* ptrBlock 
 int fs_format( const char* discName, u_int nb_blocks, u_int size_blocks, u_int nb_inodes ) {
 
 	FileSystem ptrFileSystem = fs_Allocate( discName, true, nb_blocks, size_blocks, nb_inodes, 32 );
+	if ( ptrFileSystem == NULL )
+		return -1;
 
-	return (int)ptrFileSystem;
+
+	return 0;
 }
 
 int fs_mount ( FileSystem* this, const char* path, size size_cache ) {
