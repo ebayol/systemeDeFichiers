@@ -53,9 +53,12 @@ INode* in_Allocate ( adress type, adress nb_links, adress file_size, adress* ind
 }
 
 
-void in_Free ( INode* this ) {
+INode* in_Free ( INode* this ) {
+	if ( this == NULL )
+		return NULL;
 	free ( this );
 	this = NULL;
+	return this;
 }
 
 /* **************************************************************************************************** */

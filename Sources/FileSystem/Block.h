@@ -13,15 +13,13 @@
 /* ***                                        TYPE DEFINITION                                       *** */
 /* **************************************************************************************************** */
 
-#define BLOCK_LENGTH 128
-#define BLOCK_SIZE   4096
 
 typedef struct {
 
 	union {
-		uint32_t data[ BLOCK_LENGTH ];
+		uint32_t* data;
 		adress adressNextEmpty;
-	}
+	};
 
 } Block;
 
@@ -29,14 +27,13 @@ typedef struct {
 /* ***                                   CONSTRUCTOR / DESTRUCTOR                                   *** */
 /* **************************************************************************************************** */
 
-Block* b_Allocate ( void );
-void   b_Free     ( Block* this );
+Block* b_Allocate ( uint32_t block_size );
+Block* b_Free     ( Block* this );
 
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */
 /* **************************************************************************************************** */
 
-size            b_getLength          ( Block* this );
 adress          b_getAdressNextEmpty ( Block* this );
 const uint32_t* b_getData            ( Block* this );
 uint32_t        b_getDataAt          ( Block* this, adress id );

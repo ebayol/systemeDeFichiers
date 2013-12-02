@@ -19,7 +19,7 @@ SuperBlock* sb_AllocateEmpty ( void ) {
 	SuperBlock* this = (SuperBlock*) malloc( sizeof( SuperBlock ) );
 
 	// Fill fields about blocks:
-	sb_setSizeBlock    ( this, 0 );
+	sb_setSizeBlocks    ( this, 0 );
 	sb_setNbBlocks     ( this, 0 );
 	sb_setNbBlocksUsed ( this, 0 );
 
@@ -36,20 +36,18 @@ SuperBlock* sb_AllocateEmpty ( void ) {
 	return this;
 }
 
-SuperBlock* sb_Allocate ( size nb_blocks, size size_block,
-		            size nb_inodes, size size_inode ) {
+SuperBlock* sb_Allocate ( size nb_blocks, size size_block, size nb_inodes ) {
 	// Make the pointer:
 	SuperBlock* this = sb_AllocateEmpty();
 
 	// Fill fields about blocks:
-	sb_setSizeBlock    ( this, size_block );
+	sb_setSizeBlocks    ( this, size_block );
 	sb_setNbBlocks     ( this, nb_blocks );
 	sb_setNbBlocksUsed ( this, 0 );
 
 	sb_setFirstFreeBlock ( this, 0 );
 
 	// Fill fields about inodes:
-	sb_setInodeSize    ( this, size_inode );
 	sb_setNbInodes     ( this, nb_inodes );
 	sb_setNbInodesUsed ( this, 0 );
 
@@ -70,8 +68,8 @@ void sb_Free ( SuperBlock* this ) {
 
 // Blocks :
 
-size sb_getSizeBlock ( SuperBlock* this ) {
-	return this->size_block;
+size sb_getSizeBlocks ( SuperBlock* this ) {
+	return this->size_blocks;
 }
 
 size sb_getNbBlocks ( SuperBlock* this ) {
@@ -114,8 +112,8 @@ adress sb_getFirstFreeInode ( SuperBlock* this ) {
 
 // Blocks :
 
-SuperBlock* sb_setSizeBlock ( SuperBlock* this, size size_block ) {
-	this->size_block = size_block;
+SuperBlock* sb_setSizeBlocks ( SuperBlock* this, size size_blocks ) {
+	this->size_blocks = size_blocks;
 	return this;
 }
 
@@ -135,11 +133,6 @@ SuperBlock* sb_setFirstFreeBlock ( SuperBlock* this, adress free_block ) {
 }
 
 // I-Nodes
-
-SuperBlock* sb_setInodeSize ( SuperBlock* this, size size_inode ) {
-	this->size_inode = size_inode;
-	return this;
-}
 
 SuperBlock* sb_setNbInodes ( SuperBlock* this, size nb_inodes ) {
 	this->nb_inodes = nb_inodes;

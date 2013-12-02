@@ -37,7 +37,7 @@ INode;
 INode* in_AllocateEmpty ( void );
 INode* in_Allocate      ( adress type, adress nb_links, adress file_size, adress* indexFreeBlocks );
 
-void in_Free ( INode* this );
+INode* in_Free ( INode* this );
 
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */

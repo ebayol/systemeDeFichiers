@@ -13,32 +13,28 @@
 /* ***                                   CONSTRUCTOR / DESTRUCTOR                                   *** */
 /* **************************************************************************************************** */
 
-Block* b_Allocate ( void ) {
+Block* b_Allocate ( uint32_t block_size ) {
+	// Checking argument:
+	block_size = block_size / sizeof(uint32_t);
 
 	// Make the pointer:
-	Block* this = (Block*) malloc( sizeof( Block ) );
-
-	// Fill fields
-	for ( adress index = 0 ; index < b_getLength( this ) ; ++index ) {
-		b_setDataAt( this, index, 0 );
-	}
+	Block* this = (Block*) calloc( sizeof(uint32_t), block_size );
 
 	// Return this:
 	return this;
 }
 
-void b_Free ( Block* this ) {
+Block* b_Free ( Block* this ) {
+	if ( this == NULL )
+		return NULL;
 	free( this );
 	this = NULL;
+	return this;
 }
 
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */
 /* **************************************************************************************************** */
-
-size b_getLength ( Block* this ) {
-	return BLOCK_LENGTH;
-}
 
 adress b_getAdressNextEmpty ( Block* this ) {
 	return this->adressNextEmpty;
@@ -62,7 +58,7 @@ Block* b_setAdressNextEmpty ( Block* this, adress adressNextEmpty ) {
 }
 
 Block* b_setData ( Block* this, const uint32_t* data ) {
-	for ( adress index = 0 ; index < b_getLength( this ) ; ++index ) {
+	for ( adress index = 0 ; index < ( sizeof( data ) / sizeof(uint32_t) ) ; ++index ) {
 		b_setDataAt( this, index, data[ index ] );
 	}
 	return this;

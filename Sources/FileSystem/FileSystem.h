@@ -28,9 +28,8 @@ FileSystem;
 /* **************************************************************************************************** */
 
 FileSystem* fs_AllocateEmpty ( void );
-FileSystem* fs_Allocate      ( size nb_blocks, size size_blocks,
-                               size nb_inodes, size size_inode );
-void        fs_Free          ( FileSystem* this );
+FileSystem* fs_Allocate      ( size nb_blocks, size size_blocks, size nb_inodes );
+FileSystem* fs_Free          ( FileSystem* this );
 
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */
@@ -47,8 +46,8 @@ Block*      fs_getBlockAt    ( FileSystem* this, adress index );
 
 FileSystem* fs_setSuperblock ( FileSystem* this, SuperBlock* superblok );
 FileSystem* fs_setFile       ( FileSystem* this, FILE* ptrFile );
-FileSystem* fs_setInodeAt    ( FileSystem* this, INode* ptrInode );
-FileSystem* fs_setBlockAt    ( FileSystem* this, Block* ptrBlock );
+FileSystem* fs_setInodeAt    ( FileSystem* this, adress index, INode* ptrInode );
+FileSystem* fs_setBlockAt    ( FileSystem* this, adress index, Block* ptrBlock );
 
 /* **************************************************************************************************** */
 /* ***                                          UTILISTATION                                        *** */

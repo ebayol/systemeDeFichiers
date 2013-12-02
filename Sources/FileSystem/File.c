@@ -62,16 +62,16 @@ INode* f_readINodeAt ( FILE* ptrFile, adress indexINode ) {
 	return ptrINode;
 }
 
-Block* f_readBlockAt ( FILE* ptrFile, adress index ) {
+Block* f_readBlockAt ( FILE* ptrFile, adress size_Block, adress index ) {
 
 	// Place in the file:
 	fseek( ptrFile, index, SEEK_SET );
 
 	// Make result pointer:
-	Block* ptrBlock = b_Allocate();
+	Block* ptrBlock = b_Allocate( size_Block );
 
 	// Read in the file:
-	size nbLues = fread( ptrBlock, sizeof(uint32_t), b_getLength(ptrBlock), ptrFile );
+	size nbLues = fread( ptrBlock, size_Block, 1, ptrFile );
 	if ( nbLues != b_getLength(ptrBlock) ) {
 		perror("fread");
 		exit(-1);
