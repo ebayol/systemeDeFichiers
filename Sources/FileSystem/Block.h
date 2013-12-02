@@ -1,10 +1,8 @@
-
-
 /* #################################################################################################### */
 /* ###                                            BLOCKS                                            ### */
 /* #################################################################################################### */
-#ifndef BLOCK_H_
-#define BLOCK_H_
+#ifndef BLOCK_H
+#define BLOCK_H
 
 // Dependances standards:
 #include "../Includes.h"
@@ -13,12 +11,11 @@
 /* ***                                        TYPE DEFINITION                                       *** */
 /* **************************************************************************************************** */
 
-
 typedef struct {
 
 	union {
 		uint32_t* data;
-		adress adressNextEmpty;
+		u_int adressNextEmpty;
 	};
 
 } Block;
@@ -34,17 +31,16 @@ Block* b_Free     ( Block* this );
 /* ***                                            ACCESSOR                                          *** */
 /* **************************************************************************************************** */
 
-adress          b_getAdressNextEmpty ( Block* this );
-const uint32_t* b_getData            ( Block* this );
-uint32_t        b_getDataAt          ( Block* this, adress id );
+const uint32_t* b_getData   ( Block* this );
+uint32_t        b_getDataAt ( Block* this, u_int id );
 
 /* **************************************************************************************************** */
 /* ***                                            MUTATOR                                           *** */
 /* **************************************************************************************************** */
 
-Block* b_setAdressNextEmpty ( Block* this, adress adressNextEmpty );
+Block* b_setAdressNextEmpty ( Block* this, u_int adressNextEmpty );
 Block* b_setData            ( Block* this, const uint32_t* data );
-Block* b_setDataAt          ( Block* this, adress index, uint32_t data );
+Block* b_setDataAt          ( Block* this, u_int index, uint32_t data );
 
-#endif /* FIN BLOCK_H_ */
+#endif /* FIN BLOCK_H */
 /* #################################################################################################### */

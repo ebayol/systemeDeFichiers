@@ -43,7 +43,7 @@ SuperBlock* f_readSuperBlock ( FILE* ptrFile ) {
 	return ptrSuperblock;
 }
 
-INode* f_readINodeAt ( FILE* ptrFile, adress indexINode ) {
+INode* f_readINodeAt ( FILE* ptrFile, u_int indexINode ) {
 
 	// Place in the file:
 	fseek( ptrFile, indexINode, SEEK_SET );
@@ -62,16 +62,17 @@ INode* f_readINodeAt ( FILE* ptrFile, adress indexINode ) {
 	return ptrINode;
 }
 
-Block* f_readBlockAt ( FILE* ptrFile, adress size_Block, adress index ) {
+
+Block* f_readBlockAt ( FILE* ptrFile, u_int size_block, u_int index ) {
 
 	// Place in the file:
 	fseek( ptrFile, index, SEEK_SET );
 
 	// Make result pointer:
-	Block* ptrBlock = b_Allocate( size_Block );
+	Block* ptrBlock = b_Allocate( size_block );
 
 	// Read in the file:
-	size nbLues = fread( ptrBlock, size_Block, 1, ptrFile );
+	size nbLues = fread( ptrBlock, size_block, 1, ptrFile );
 	if ( nbLues != 1 ) {
 		perror("fread");
 		exit(-1);
@@ -100,7 +101,8 @@ FILE* f_writeSuperblock ( FILE* ptrFile, SuperBlock* ptrSuperblock ) {
 	return ptrFile;
 }
 
-FILE* f_writeINodeAt ( FILE* ptrFile, adress index, INode* ptrINode ) {
+
+FILE* f_writeINodeAt ( FILE* ptrFile, u_int index, INode* ptrINode ) {
 
 	// Place in the file:
 	fseek( ptrFile, index, SEEK_SET );
@@ -116,7 +118,7 @@ FILE* f_writeINodeAt ( FILE* ptrFile, adress index, INode* ptrINode ) {
 }
 
 
-FILE* f_writeBlockAt ( FILE* ptrFile, adress index, Block* ptrBlock, adress size_block ) {
+FILE* f_writeBlockAt ( FILE* ptrFile, u_int index, Block* ptrBlock, u_int size_block ) {
 
 	// Place in the file:
 	fseek( ptrFile, index, SEEK_SET );

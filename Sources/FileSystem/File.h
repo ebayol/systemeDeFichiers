@@ -20,9 +20,10 @@
 
 FileSystem* f_readFileSystem      ( FILE* ptrFile );
 SuperBlock* f_readSuperBlock      ( FILE* ptrFile );
-INode*      f_readINodeAt         ( FILE* ptrFile, adress indexINode );
-Block*      f_readBlockAt         ( FILE* ptrFile, adress size_Block, adress index );
-adress      f_readAdressNextBlock ( FILE* ptrFile, adress indexBlock );
+
+INode*      f_readINodeAt         ( FILE* ptrFile, u_int indexINode );
+Block*      f_readBlockAt         ( FILE* ptrFile, u_int index, u_int size_block );
+u_int       f_readAdressNextBlock ( FILE* ptrFile, u_int index );
 
 
 /* **************************************************************************************************** */
@@ -30,9 +31,10 @@ adress      f_readAdressNextBlock ( FILE* ptrFile, adress indexBlock );
 /* **************************************************************************************************** */
 
 FILE* f_writeSuperblock      ( FILE* ptrFile, SuperBlock* ptrSuperblock );
-FILE* f_writeINodeAt         ( FILE* ptrFile, adress index, INode* ptrINode );
-FILE* f_writeBlockAt         ( FILE* ptrFile, adress index, Block* ptrBlock, adress size_block );
-FILE* f_xriteAdressNextBlock ( FILE* ptrFile, adress indexBlock, adress nextBlock );
+
+FILE* f_writeINodeAt         ( FILE* ptrFile, u_int indexINode, INode* ptrINode );
+FILE* f_writeBlockAt         ( FILE* ptrFile, u_int indexBlock, Block* ptrBlock, u_int index );
+FILE* f_xriteAdressNextBlock ( FILE* ptrFile, u_int indexBlock, u_int nextBlock );
 
 #endif /* FICHIER_H_ */
 /* #################################################################################################### */
