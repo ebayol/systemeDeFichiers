@@ -26,7 +26,6 @@ SuperBlock* sb_AllocateEmpty ( void ) {
 	sb_setFirstFreeBlock ( this, 0 );
 
 	// Fill fields about inodes:
-	sb_setInodeSize    ( this, 0 );
 	sb_setNbInodes     ( this, 0 );
 	sb_setNbInodesUsed ( this, 0 );
 

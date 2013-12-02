@@ -28,7 +28,7 @@ FileSystem;
 /* **************************************************************************************************** */
 
 FileSystem* fs_AllocateEmpty ( void );
-FileSystem* fs_Allocate      ( size nb_blocks, size size_blocks, size nb_inodes );
+FileSystem* fs_Allocate      ( size nb_blocks, size size_blocks, size nb_inodes, const char* diskName, bool format );
 FileSystem* fs_Free          ( FileSystem* this );
 
 /* **************************************************************************************************** */

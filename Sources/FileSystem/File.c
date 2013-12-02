@@ -72,7 +72,7 @@ Block* f_readBlockAt ( FILE* ptrFile, adress size_Block, adress index ) {
 
 	// Read in the file:
 	size nbLues = fread( ptrBlock, size_Block, 1, ptrFile );
-	if ( nbLues != b_getLength(ptrBlock) ) {
+	if ( nbLues != 1 ) {
 		perror("fread");
 		exit(-1);
 	}
@@ -100,14 +100,30 @@ FILE* f_writeSuperblock ( FILE* ptrFile, SuperBlock* ptrSuperblock ) {
 	return ptrFile;
 }
 
-FILE* f_writeBlockAt    ( FILE* ptrFile, adress index, Block* ptrBlock ) {
+FILE* f_writeINodeAt ( FILE* ptrFile, adress index, INode* ptrINode ) {
 
 	// Place in the file:
 	fseek( ptrFile, index, SEEK_SET );
 
 	// write in the file:
-	size nbEcris = fwrite( ptrBlock, sizeof(uint32_t), b_getLength(ptrBlock), ptrFile );
-	if ( nbEcris != b_getLength(ptrBlock) ) {
+	size nbEcris = fwrite( ptrINode, sizeof(INode), 1, ptrFile );
+	if ( nbEcris != 1 ) {
+		perror("fwrite");
+		exit(-1);
+	}
+	// Return
+	return ptrFile;
+}
+
+
+FILE* f_writeBlockAt ( FILE* ptrFile, adress index, Block* ptrBlock, adress size_block ) {
+
+	// Place in the file:
+	fseek( ptrFile, index, SEEK_SET );
+
+	// write in the file:
+	size nbEcris = fwrite( ptrBlock, size_block, 1, ptrFile );
+	if ( nbEcris != 1 ) {
 		perror("fwrite");
 		exit(-1);
 	}

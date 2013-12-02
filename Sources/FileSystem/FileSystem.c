@@ -109,7 +109,7 @@ FileSystem* fs_setInodeAt ( FileSystem* this, adress index, INode* ptrINode ) {
 	return this;
 }
 
-FileSystem* fs_setBlockAt ( FileSystem* this, Block* ptrBlock ) {
+FileSystem* fs_setBlockAt ( FileSystem* this, adress index, Block* ptrBlock ) {
 	if ( this == NULL )
 		return NULL;
 	f_writeBlockAt( fs_getFile( this ), index, ptrBlock );
