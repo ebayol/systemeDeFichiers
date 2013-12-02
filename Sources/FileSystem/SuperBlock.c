@@ -3,8 +3,8 @@
 /* #################################################################################################### */
 /* ###                                          SUPERBLOCK                                          ### */
 /* #################################################################################################### */
-#ifndef SUPERBLOCK_C_
-#define SUPERBLOCK_C_
+#ifndef SUPERBLOCK_C
+#define SUPERBLOCK_C
 
 // Dependances Internes:
 #include "SuperBlock.h"
@@ -148,6 +148,6 @@ SuperBlock* sb_setFirstFreeInode ( SuperBlock* this, u_int free_inodes ) {
 	return this;
 }
 
-#endif /* FIN SUPERBLOCK_C_ */
+#endif /* FIN SUPERBLOCK_C */
 /* #################################################################################################### */
 

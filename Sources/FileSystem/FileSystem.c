@@ -82,10 +82,10 @@ INode* fs_getInodeAt ( FileSystem* this, u_int index ) {
 }
 
 
-Block* fs_getBlockAt ( FileSystem* this, u_int index ) {
+Block* fs_getBlockAt ( FileSystem* this, u_int index, size size_block ) {
 	if ( this == NULL || fs_getFile(this) == NULL )
 		return NULL;
-	return f_readBlockAt( fs_getFile(this), index );
+	return f_readBlockAt( fs_getFile(this), index, size_block );
 }
 
 /* **************************************************************************************************** */
@@ -128,12 +128,12 @@ FileSystem* fs_setInodeAt ( FileSystem* this, u_int indexINode, INode* ptrInode 
 	return this;
 }
 
-FileSystem* fs_setBlockAt ( FileSystem* this, u_int indexBlock, Block* ptrBlock ) {
+FileSystem* fs_setBlockAt ( FileSystem* this, u_int indexBlock, Block* ptrBlock, size size_block ) {
 	if ( fs_getFile(this) == NULL )
 		return this;
 
 	// Write in file:
-	f_writeBlockAt( fs_getFile( this ), indexBlock, ptrBlock );
+	f_writeBlockAt( fs_getFile( this ), indexBlock, ptrBlock, size_block );
 
 	// Return fs:
 	return this;
@@ -143,7 +143,7 @@ FileSystem* fs_setBlockAt ( FileSystem* this, u_int indexBlock, Block* ptrBlock 
 /* ***                                          UTILISTATION                                        *** */
 /* **************************************************************************************************** */
 
-int fs_format( const char* discName, u_int nb_blocks, u_int size_blocks, u_int nb_inodes ) {
+int fs_format( const char* discName, u_int nb_blocks, size size_blocks, u_int nb_inodes ) {
 	return 0;
 }
 

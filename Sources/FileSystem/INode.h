@@ -43,7 +43,7 @@ INode* in_Free ( INode* this );
 /* ***                                            ACCESSOR                                          *** */
 /* **************************************************************************************************** */
 
-int    in_getType     ( INode* this );
+int   in_getType     ( INode* this );
 u_int in_getNbLinks  ( INode* this );
 u_int in_getFileSize ( INode* this );
 

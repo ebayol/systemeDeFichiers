@@ -11,36 +11,31 @@
 /* ***                                        TYPE DEFINITION                                       *** */
 /* **************************************************************************************************** */
 
-typedef struct {
-
-	union {
-		uint32_t* data;
-		u_int adressNextEmpty;
-	};
-
+typedef union {
+	octet_t* data;
+	u_int adressNextEmpty;
 } Block;
 
 /* **************************************************************************************************** */
 /* ***                                   CONSTRUCTOR / DESTRUCTOR                                   *** */
 /* **************************************************************************************************** */
 
-Block* b_Allocate ( uint32_t block_size );
+Block* b_Allocate ( size block_size );
 Block* b_Free     ( Block* this );
 
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */
 /* **************************************************************************************************** */
 
-const uint32_t* b_getData   ( Block* this );
-uint32_t        b_getDataAt ( Block* this, u_int id );
+const octet_t* b_getData   ( Block* this );
+uint32_t       b_getDataAt ( Block* this, u_int id );
 
 /* **************************************************************************************************** */
 /* ***                                            MUTATOR                                           *** */
 /* **************************************************************************************************** */
 
 Block* b_setAdressNextEmpty ( Block* this, u_int adressNextEmpty );
-Block* b_setData            ( Block* this, const uint32_t* data );
-Block* b_setDataAt          ( Block* this, u_int index, uint32_t data );
+Block* b_setData            ( Block* this, const octet_t* data, size offset );
 
 #endif /* FIN BLOCK_H */
 /* #################################################################################################### */

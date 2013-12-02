@@ -11,15 +11,12 @@
 /* ***                                   CONSTRUCTOR / DESTRUCTOR                                   *** */
 /* **************************************************************************************************** */
 
-Block* b_Allocate ( uint32_t block_size ) {
+Block* b_Allocate ( size block_size ) {
 	// Checking argument:
-	block_size = block_size / sizeof(uint32_t);
+	block_size = block_size / sizeof(octet_t);
 
 	// Make the pointer:
-	Block* this = (Block*) malloc( sizeof( Block ) );
-
-	// Allocate date:
-	this->data = (uint32_t*) calloc( sizeof(uint32_t), block_size );
+	Block* this = (Block*) malloc( block_size * sizeof(octet_t) );
 
 	// Return this:
 	return this;
@@ -41,11 +38,11 @@ u_int b_getAdressNextEmpty ( Block* this ) {
 	return this->adressNextEmpty;
 }
 
-const uint32_t* b_getData ( Block* this ) {
+const octet_t* b_getData ( Block* this ) {
 	return this->data;
 }
 
-uint32_t  b_getDataAt ( Block* this, u_int index ) {
+uint32_t b_getDataAt ( Block* this, u_int index ) {
 	return b_getData( this )[index];
 }
 
@@ -54,18 +51,23 @@ uint32_t  b_getDataAt ( Block* this, u_int index ) {
 /* **************************************************************************************************** */
 
 Block* b_setAdressNextEmpty ( Block* this, u_int adressNextEmpty ) {
+	if ( this == NULL )
+		return NULL;
+	if ( b_getData(this) != NULL )
+		free( this->data );
 	this->adressNextEmpty = adressNextEmpty;
 	return this;
 }
 
-Block* b_setData ( Block* this, const uint32_t* data ) {
-	for ( u_int index = 0 ; index < ( sizeof( data ) / sizeof(uint32_t) ) ; ++index )
-		b_setDataAt( this, index, data[ index ] );
-	return this;
-}
-
-Block* b_setDataAt ( Block* this, u_int index, uint32_t data ) {
-	this->data[index] = data;
+Block* b_setData ( Block* this, const octet_t* data, size offset ) {
+	// Ckecking
+	if ( this == NULL )
+		return NULL;
+	// Allocate data:
+	if ( this->data == NULL )
+		this->data = (octet_t*)malloc( offset );
+	// filling
+	memcpy( this->data, data, offset );
 	return this;
 }
 

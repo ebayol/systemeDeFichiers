@@ -2,8 +2,8 @@
 /* #################################################################################################### */
 /* ###                                           FICHIER                                            ### */
 /* #################################################################################################### */
-#ifndef FICHIER_C_
-#define FICHIER_C_
+#ifndef FILE_C
+#define FILE_C
 
 // Dependances Internes:
 #include "File.h"
@@ -11,18 +11,6 @@
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */
 /* **************************************************************************************************** */
-
-FileSystem* f_readFileSystem ( FILE* ptrFile ) {
-	// Make result pointer:
-	FileSystem* ptrFileSystem = fs_AllocateEmpty();
-
-	// Read in the file:
-	fs_setSuperblock( ptrFileSystem,  f_readSuperBlock( ptrFile ) );
-	fs_setFile( ptrFileSystem, ptrFile );
-
-	// return:
-	return ptrFileSystem;
-}
 
 SuperBlock* f_readSuperBlock ( FILE* ptrFile ) {
 
@@ -133,5 +121,5 @@ FILE* f_writeBlockAt ( FILE* ptrFile, u_int index, Block* ptrBlock, u_int size_b
 	return ptrFile;
 }
 
-#endif /* FICHIER_C_ */
+#endif /* FILE_C */
 /* #################################################################################################### */

@@ -3,8 +3,8 @@
 /* ###                                          SUPERBLOCK                                          ### */
 /* #################################################################################################### */
 
-#ifndef SUPERBLOCK_H_
-#define SUPERBLOCK_H_
+#ifndef SUPERBLOCK_H
+#define SUPERBLOCK_H
 
 // Dependances standards:
 #include "../Includes.h"
@@ -31,9 +31,9 @@ SuperBlock;
 /* ***                                   CONSTRUCTOR / DESTRUCTOR                                   *** */
 /* **************************************************************************************************** */
 
-SuperBlock* sb_Allocate_Default ( void );
-SuperBlock* sb_Allocate         ( size nb_blocks, size size_blocks, size nb_inodes );
-void        sb_Free             ( SuperBlock* this );
+SuperBlock* sb_AllocateEmpty ( void );
+SuperBlock* sb_Allocate      ( size nb_blocks, size size_blocks, size nb_inodes );
+void        sb_Free          ( SuperBlock* this );
 
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */
@@ -75,5 +75,5 @@ SuperBlock* sb_setNbInodesUsed   ( SuperBlock* this, size nb_inodes_used );
 
 SuperBlock* sb_setFirstFreeInode ( SuperBlock* this, u_int free_inodes );
 
-#endif /* FIN SUPERBLOCK_H_ */
+#endif /* FIN SUPERBLOCK_H */
 /* #################################################################################################### */

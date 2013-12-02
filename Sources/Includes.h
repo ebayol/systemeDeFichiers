@@ -12,8 +12,9 @@
 #include <string.h>
 
 // Type communs:
-typedef uint32_t u_int;
+typedef unsigned int u_int;
 typedef unsigned int size;
+typedef unsigned char octet_t;
 
 #endif /* INCLUDES_H */
 /* #################################################################################################### */
