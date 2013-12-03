@@ -22,8 +22,8 @@
 
 typedef struct {
 	int type;
-	size nb_links;
-	size file_size;
+	u_int nb_links;
+	u_int file_size;
 
 	u_int directBlocksAdresses   [ NB_DIRECT_BLOCKS ];
 	u_int IndirectBlocksAdresses [ NB_INDIRECT_BLOCKS ];
@@ -54,6 +54,12 @@ const u_int* in_getIndirectBlocksAdresses ( INode* this );
 u_int        in_getIndirectBlocksAdressAt ( INode* this, u_int index );
 
 /* **************************************************************************************************** */
+/* ***                                           DEBBUGAGE                                          *** */
+/* **************************************************************************************************** */
+
+void in_printf ( INode* this, u_int index );
+
+/* **************************************************************************************************** */
 /* ***                                            MUTATOR                                           *** */
 /* **************************************************************************************************** */
 
@@ -61,10 +67,10 @@ INode* in_setType     ( INode* this, u_int type );
 INode* in_setNbLinks  ( INode* this, u_int nb_links );
 INode* in_setFileSize ( INode* this, u_int file_size );
 
-INode* in_setDirectBlockAdressAt  ( INode* this, u_int index, u_int indexDirectBlock );
+INode* in_setDirectBlocksAdressAt  ( INode* this, u_int index, u_int indexDirectBlock );
 INode* in_setDirectBlocksAdresses ( INode* this, u_int* indexDirectBlocks );
 
-INode* in_setIndirectBlockAdressAt  ( INode* this, u_int index, u_int indexIndirectBlock  );
+INode* in_setIndirectBlocksAdressAt  ( INode* this, u_int index, u_int indexIndirectBlock  );
 INode* in_setIndirectBlocksAdresses ( INode* this, u_int* indexIndirectBlocks );
 
 #endif /* FIN INODE_H_ */

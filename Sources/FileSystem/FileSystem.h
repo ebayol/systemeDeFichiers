@@ -28,33 +28,96 @@ FileSystem;
 /* **************************************************************************************************** */
 
 FileSystem* fs_AllocateEmpty ( void );
-FileSystem* fs_Allocate      ( u_int nb_blocks, size size_blocks, u_int nb_inodes, const char* diskName, bool format );
+FileSystem* fs_Allocate      ( u_int nb_blocks, u_int size_blocks, u_int nb_inodes, const char* diskName, bool format );
 FileSystem* fs_Free          ( FileSystem* this );
 
 /* **************************************************************************************************** */
-/* ***                                            ACCESSOR                                          *** */
+/* ***                                            ACCESSORS                                          *** */
+/* ***                                           FILE SYSTEM                                        *** */
 /* **************************************************************************************************** */
 
-SuperBlock* fs_getSuperblock ( FileSystem* this );
+SuperBlock* fs_getSuperBlock ( FileSystem* this );
 FILE*       fs_getFile       ( FileSystem* this );
-INode*      fs_getInodeAt    ( FileSystem* this, u_int index );
-Block*      fs_getBlockAt    ( FileSystem* this, u_int index, size size_block );
 
 /* **************************************************************************************************** */
-/* ***                                            MUTATOR                                           *** */
+/* ***                                            ACCESSORS                                         *** */
+/* ***                                              FILE                                            *** */
+/* **************************************************************************************************** */
+
+SuperBlock* fs_readSuperBlock ( FileSystem* this );
+INode*      fs_readINodeAt    ( FileSystem* this, u_int index );
+Block*      fs_readBlockAt    ( FileSystem* this, u_int index );
+
+/* **************************************************************************************************** */
+/* ***                                            ACCESSORS                                         *** */
+/* ***                                           SUPER BLOCK                                        *** */
+/* **************************************************************************************************** */
+
+// Blocks :
+
+u_int fs_getSizeBlocks     ( FileSystem* this );
+u_int fs_getNbBlocks       ( FileSystem* this );
+u_int fs_getNbBlocksUsed   ( FileSystem* this );
+u_int fs_getNbBlocksFree   ( FileSystem* this );
+
+u_int fs_getFirstFreeBlock ( FileSystem* this );
+
+// I-Nodes
+
+u_int fs_getNbInodes       ( FileSystem* this );
+u_int fs_getNbInodesUsed   ( FileSystem* this );
+u_int fs_getNbInodesFree   ( FileSystem* this );
+
+u_int fs_getFirstFreeInode ( FileSystem* this );
+
+/* **************************************************************************************************** */
+/* ***                                           DEBBUGAGE                                          *** */
+/* **************************************************************************************************** */
+
+void fs_printf( FileSystem* this );
+
+/* **************************************************************************************************** */
+/* ***                                            MUTATORS                                          *** */
+/* ***                                          FILE  SYSTEM                                        *** */
 /* **************************************************************************************************** */
 
 FileSystem* fs_setSuperblock ( FileSystem* this, SuperBlock* ptrSuperblok );
 FileSystem* fs_setFile       ( FileSystem* this, FILE* ptrFile );
-FileSystem* fs_setInodeAt    ( FileSystem* this, u_int index, INode* ptrInode );
-FileSystem* fs_setBlockAt    ( FileSystem* this, u_int index, Block* ptrBlock, size size_block );
+
+/* **************************************************************************************************** */
+/* ***                                            MUTATORS                                          *** */
+/* ***                                              FILE                                            *** */
+/* **************************************************************************************************** */
+
+FileSystem* fs_saveINodeAt    ( FileSystem* this, u_int index, INode* ptrInode );
+FileSystem* fs_saveBlockAt    ( FileSystem* this, u_int index, Block* ptrBlock );
+
+/* **************************************************************************************************** */
+/* ***                                            MUTATORS                                          *** */
+/* ***                                           SUPER BLOCK                                        *** */
+/* **************************************************************************************************** */
+
+// Blocks :
+
+FileSystem* fs_setSizeBlocks     ( FileSystem* this, u_int size_block );
+FileSystem* fs_setNbBlocks       ( FileSystem* this, u_int nb_blocks );
+FileSystem* fs_setNbBlocksUsed   ( FileSystem* this, u_int nb_blocks_used );
+
+FileSystem* fs_setFirstFreeBlock ( FileSystem* this, u_int free_block );
+
+// I-Nodes
+
+FileSystem* fs_setNbInodes       ( FileSystem* this, u_int nb_inodes );
+FileSystem* fs_setNbInodesUsed   ( FileSystem* this, u_int nb_inodes_used );
+
+FileSystem* fs_setFirstFreeInode ( FileSystem* this, u_int free_inodes );
 
 /* **************************************************************************************************** */
 /* ***                                          UTILISTATION                                        *** */
 /* **************************************************************************************************** */
 
-int fs_format( const char* path, u_int nb_blocks, size size_blocks, u_int nb_inodes );
-int fs_mount ( FileSystem* this, const char* path, size size_cache );
+int fs_format( const char* path, u_int nb_blocks, u_int size_blocks, u_int nb_inodes );
+int fs_mount ( FileSystem* this, const char* path, u_int size_cache );
 int fs_umount( FileSystem* this );
 
 #endif /* FILE SYSTEM */

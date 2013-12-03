@@ -11,9 +11,7 @@
 /* ***                                   CONSTRUCTOR / DESTRUCTOR                                   *** */
 /* **************************************************************************************************** */
 
-Block* b_Allocate ( size block_size ) {
-	// Checking argument:
-	block_size = block_size / sizeof(octet_t);
+Block* b_Allocate ( u_int block_size ) {
 
 	// Make the pointer:
 	Block* this = (Block*) malloc( block_size * sizeof(octet_t) );
@@ -47,6 +45,14 @@ uint32_t b_getDataAt ( Block* this, u_int index ) {
 }
 
 /* **************************************************************************************************** */
+/* ***                                           DEBBUGAGE                                          *** */
+/* **************************************************************************************************** */
+
+void b_printf( Block* this, u_int index ) {
+	printf( "[ %2d  Block             %10d octets ]\n", index, sizeof( b_getData( this ) ) / sizeof( octet_t) );
+}
+
+/* **************************************************************************************************** */
 /* ***                                            MUTATOR                                           *** */
 /* **************************************************************************************************** */
 
@@ -59,7 +65,7 @@ Block* b_setAdressNextEmpty ( Block* this, u_int adressNextEmpty ) {
 	return this;
 }
 
-Block* b_setData ( Block* this, const octet_t* data, size offset ) {
+Block* b_setData ( Block* this, const octet_t* data, u_int offset ) {
 	// Ckecking
 	if ( this == NULL )
 		return NULL;

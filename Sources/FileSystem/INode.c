@@ -23,6 +23,10 @@ INode* in_AllocateEmpty ( void ) {
 	in_setNbLinks  ( this, 0 );
 	in_setFileSize ( this, 0 );
 
+	// Adresses:
+	in_setDirectBlocksAdressAt ( this, 0, 0 );
+	in_setIndirectBlocksAdressAt ( this, 0, 0 );
+
 	//Return pointer:
 	return this;
 }
@@ -36,17 +40,6 @@ INode* in_Allocate ( u_int type, u_int nb_links, u_int file_size, u_int* indexFr
 	in_setType     ( this, type );
 	in_setNbLinks  ( this, nb_links );
 	in_setFileSize ( this, file_size );
-
-	/*unsigned int id = 0;
-	for ( adress index = 0 ; index < NB_DIRECT_BLOCKS ; ++index ) {
-		in_setDirectBlockAdressAt( this, id, indexFreeBlocks[id] );
-		id += index;
-	}
-	for ( adress index = 0 ; index < NB_INDIRECT_BLOCKS ; ++index ) {
-		in_setIndirectBlockAdressAt( this, id, indexFreeBlocks[id] );
-		// TODO - initialise inside the block
-		id += index;
-	}*/
 
 	//Return pointer:
 	return this;
@@ -94,6 +87,19 @@ u_int in_getIndirectBlocksAdressAt ( INode* this, u_int index ) {
 }
 
 /* **************************************************************************************************** */
+/* ***                                           DEBBUGAGE                                          *** */
+/* **************************************************************************************************** */
+
+void in_printf( INode* this, u_int index ) {
+	printf( "[ %3d  INode             %10d octets ]\n", index, sizeof( INode ) / sizeof( octet_t ) );
+	printf( "[         Type:              %10d    ]\n", in_getType( this ) );
+	printf( "[         Number of links:   %10d    ]\n", in_getNbLinks( this ) );
+	printf( "[         File size:         %10d o  ]\n", in_getFileSize( this ) / sizeof( octet_t ) );
+	printf( "[         Direct  Block At:  %10d    ]\n", in_getDirectBlockAdressAt( this, 0 ) );
+	printf( "[         Inirect Block At:  %10d    ]\n", in_getIndirectBlocksAdressAt( this, 0 ) );
+}
+
+/* **************************************************************************************************** */
 /* ***                                            MUTATOR                                           *** */
 /* **************************************************************************************************** */
 
@@ -112,26 +118,26 @@ INode* in_setFileSize ( INode* this,u_int file_size ) {
 	return this;
 }
 
-INode* in_setDirectBlockAdressAt ( INode* this, u_int index, u_int indexDirectBlock ) {
+INode* in_setDirectBlocksAdressAt ( INode* this, u_int index, u_int indexDirectBlock ) {
 	this->directBlocksAdresses[ index ] = indexDirectBlock;
 	return this;
 }
 
 INode* in_setDirectBlocksAdresses ( INode* this, u_int* indexDirectBlocks ) {
 	for ( u_int index = 0 ; index < NB_DIRECT_BLOCKS ; ++index ) {
-		in_setDirectBlockAdressAt( this, index, indexDirectBlocks[ index ] );
+		in_setDirectBlocksAdressAt( this, index, indexDirectBlocks[ index ] );
 	}
 	return this;
 }
 
-INode* in_setIndirectBlockAdressAt ( INode* this, u_int index, u_int indexIndirectBlock  ) {
+INode* in_setIndirectBlocksAdressAt ( INode* this, u_int index, u_int indexIndirectBlock  ) {
 	this->IndirectBlocksAdresses[ index ] = indexIndirectBlock;
 	return this;
 }
 
 INode* in_setIndirectBlocksAdresses ( INode* this, u_int* indexIndirectBlocks ) {
 	for ( u_int index = 0 ; index < NB_INDIRECT_BLOCKS ; ++index ) {
-		in_setIndirectBlockAdressAt( this, index, indexIndirectBlocks[ index ] );
+		in_setIndirectBlocksAdressAt( this, index, indexIndirectBlocks[ index ] );
 	}
 	return this;
 }

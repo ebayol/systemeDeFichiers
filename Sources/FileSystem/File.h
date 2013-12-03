@@ -28,10 +28,10 @@ u_int       f_readAdressNextBlock ( FILE* ptrFile, u_int index );
 /* ***                                            MUTATOR                                           *** */
 /* **************************************************************************************************** */
 
-FILE* f_writeSuperblock      ( FILE* ptrFile, SuperBlock* ptrSuperblock );
-FILE* f_writeINodeAt         ( FILE* ptrFile, u_int index, INode* ptrINode );
-FILE* f_writeBlockAt         ( FILE* ptrFile, u_int index, Block* ptrBlock, size size_block );
-FILE* f_xriteAdressNextBlock ( FILE* ptrFile, u_int index, u_int nextBlock );
+FILE* f_writeSuperblock        ( FILE* ptrFile, SuperBlock* ptrSuperblock );
+FILE* f_writeINodeAt           ( FILE* ptrFile, INode* ptrINode, u_int index );
+FILE* f_writeBlockAt           ( FILE* ptrFile, Block* ptrBlock, u_int size_block, u_int index );
+FILE* f_writeAdressNextBlockAt ( FILE* ptrFile, u_int nextBlock, u_int index );
 
 #endif /* FILE_H */
 /* #################################################################################################### */
