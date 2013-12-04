@@ -33,7 +33,7 @@ SuperBlock;
 
 SuperBlock* sb_AllocateEmpty ( void );
 SuperBlock* sb_Allocate      ( u_int nb_blocks, u_int size_blocks, u_int nb_inodes );
-void        sb_Free          ( SuperBlock* this );
+SuperBlock* sb_Free          ( SuperBlock* this );
 
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */

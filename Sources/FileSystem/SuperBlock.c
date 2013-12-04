@@ -51,9 +51,10 @@ SuperBlock* sb_Allocate ( u_int nb_blocks, u_int size_block, u_int nb_inodes ) {
 	return this;
 }
 
-void sb_Free ( SuperBlock* this ) {
+SuperBlock* sb_Free ( SuperBlock* this ) {
 	free ( this );
 	this = NULL;
+	return this;
 }
 
 /* **************************************************************************************************** */
