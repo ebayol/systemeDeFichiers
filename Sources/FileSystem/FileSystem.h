@@ -89,6 +89,7 @@ FileSystem* fs_setFile       ( FileSystem* this, FILE* ptrFile );
 /* ***                                              FILE                                            *** */
 /* **************************************************************************************************** */
 
+FileSystem* fs_saveSuperblock ( FileSystem* this );
 FileSystem* fs_saveINodeAt    ( FileSystem* this, u_int index, INode* ptrInode );
 FileSystem* fs_saveBlockAt    ( FileSystem* this, u_int index, Block* ptrBlock );
 
@@ -115,6 +116,9 @@ FileSystem* fs_setFirstFreeInode ( FileSystem* this, u_int free_inodes );
 /* **************************************************************************************************** */
 /* ***                                          UTILISTATION                                        *** */
 /* **************************************************************************************************** */
+
+INode* fs_reserveAndReturnFirstFreeINode( FileSystem* this );
+Block* fs_reserveAndReturnFirstFreeBlock( FileSystem* this );
 
 int fs_format( const char* path, u_int nb_blocks, u_int size_blocks, u_int nb_inodes );
 int fs_mount ( FileSystem* this, const char* path, u_int size_cache );

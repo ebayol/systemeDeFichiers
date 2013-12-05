@@ -40,11 +40,11 @@ SuperBlock* f_readSuperBlock ( FILE* ptrFile ) {
 }
 
 INode* f_readINodeAt ( FILE* ptrFile, u_int index ) {
-	return f_readAt( sb_AllocateEmpty(), sizeof( INode ), 1, ptrFile, index );
+	return f_readAt( in_AllocateEmpty(), sizeof( INode ), 1, ptrFile, index );
 }
 
-Block* f_readBlockAt ( FILE* ptrFile, u_int index, u_int size_block ) {
-	return f_readAt( sb_AllocateEmpty(), size_block, 1, ptrFile, index );
+Block* f_readBlockAt ( FILE* ptrFile, u_int size_block, u_int index ) {
+	return f_readAt( b_Allocate(size_block), size_block*sizeof(octet_t), 1, ptrFile, index );
 }
 
 /* **************************************************************************************************** */
@@ -86,7 +86,7 @@ FILE* f_writeINodeAt ( INode* ptrINode, FILE* ptrFile, u_int index ) {
 
 
 FILE* f_writeBlockAt ( Block* ptrBlock, u_int size_block, FILE* ptrFile, u_int index ) {
-	return f_writeAt( ptrBlock, sizeof( Block ), 1, ptrFile, index );
+	return f_writeAt( ptrBlock, size_block * sizeof(octet_t), 1, ptrFile, index );
 }
 
 #endif /* FILE_C */

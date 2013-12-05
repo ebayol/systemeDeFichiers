@@ -11,10 +11,7 @@
 /* ***                                        TYPE DEFINITION                                       *** */
 /* **************************************************************************************************** */
 
-typedef union {
-	octet_t* data;
-	u_int adressNextEmpty;
-} Block;
+typedef octet_t Block;
 
 /* **************************************************************************************************** */
 /* ***                                   CONSTRUCTOR / DESTRUCTOR                                   *** */
@@ -27,8 +24,10 @@ Block* b_Free     ( Block* this );
 /* ***                                            ACCESSOR                                          *** */
 /* **************************************************************************************************** */
 
+u_int b_getAdressNextEmpty ( Block* this );
 const octet_t* b_getData   ( Block* this );
-uint32_t       b_getDataAt ( Block* this, u_int id );
+octet_t        b_getDataAt ( Block* this, u_int id );
+
 
 /* **************************************************************************************************** */
 /* ***                                           DEBBUGAGE                                          *** */
@@ -41,7 +40,8 @@ void b_printf ( Block* this, u_int index );
 /* **************************************************************************************************** */
 
 Block* b_setAdressNextEmpty ( Block* this, u_int adressNextEmpty );
-Block* b_setData            ( Block* this, const octet_t* data, u_int offset );
-
+Block* b_setDataAt          ( Block* this, u_int index, octet_t value );
+Block* b_setData            ( Block* this, const octet_t* data, u_int size_block );
+Block* b_setDataBetween     ( Block* this, const octet_t* data, u_int id_begin_in_block, u_int offset );
 #endif /* FIN BLOCK_H */
 /* #################################################################################################### */

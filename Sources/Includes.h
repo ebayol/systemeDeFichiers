@@ -13,7 +13,7 @@
 
 // Type communs:
 typedef unsigned int u_int;
-typedef unsigned char octet_t;
+typedef char octet_t;
 
 #endif /* INCLUDES_H */
 /* #################################################################################################### */

@@ -47,6 +47,8 @@ int   in_getType     ( INode* this );
 u_int in_getNbLinks  ( INode* this );
 u_int in_getFileSize ( INode* this );
 
+u_int in_getAdressNextEmpty( INode* this );
+
 const u_int* in_getDirectBlocksAdresses ( INode* this );
 u_int        in_getDirectBlockAdressAt  ( INode* this, u_int index );
 
@@ -66,6 +68,8 @@ void in_printf ( INode* this, u_int index );
 INode* in_setType     ( INode* this, u_int type );
 INode* in_setNbLinks  ( INode* this, u_int nb_links );
 INode* in_setFileSize ( INode* this, u_int file_size );
+
+INode* in_setAdressNextEmpty( INode* this, u_int adress );
 
 INode* in_setDirectBlocksAdressAt  ( INode* this, u_int index, u_int indexDirectBlock );
 INode* in_setDirectBlocksAdresses ( INode* this, u_int* indexDirectBlocks );

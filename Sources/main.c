@@ -1,8 +1,10 @@
 #include "Includes.h"
-#include "./FileSystem/TestSuperBlock.h"
+
+#include "./FileSystem/FileSystem.h"
 
 int main( int argc, char** argv )
 {
-	TestSuperBlock();
+	fs_format( "testDisk.disk", 200000, 4096, 25000 );
+
 }
 

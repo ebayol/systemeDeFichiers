@@ -12,12 +12,7 @@
 /* **************************************************************************************************** */
 
 Block* b_Allocate ( u_int block_size ) {
-
-	// Make the pointer:
-	Block* this = (Block*) malloc( block_size * sizeof(octet_t) );
-
-	// Return this:
-	return this;
+	return (Block*) malloc( sizeof(octet_t) * block_size );
 }
 
 Block* b_Free ( Block* this ) {
@@ -33,15 +28,19 @@ Block* b_Free ( Block* this ) {
 /* **************************************************************************************************** */
 
 u_int b_getAdressNextEmpty ( Block* this ) {
-	return this->adressNextEmpty;
+	if ( this == NULL )
+		return -1;
+	return b_getDataAt( this, 0 );
 }
 
 const octet_t* b_getData ( Block* this ) {
-	return this->data;
+	if ( this == NULL )
+		return NULL;
+	return this;
 }
 
-uint32_t b_getDataAt ( Block* this, u_int index ) {
-	return b_getData( this )[index];
+octet_t b_getDataAt ( Block* this, u_int index ) {
+	return this[ index ];
 }
 
 /* **************************************************************************************************** */
@@ -49,7 +48,7 @@ uint32_t b_getDataAt ( Block* this, u_int index ) {
 /* **************************************************************************************************** */
 
 void b_printf( Block* this, u_int index ) {
-	printf( "[ %2d  Block             %10d octets ]\n", index, sizeof( b_getData( this ) ) / sizeof( octet_t) );
+	printf( "[ %2d  Block             %10d octets ]\n", index, sizeof(this)/sizeof(octet_t) );
 }
 
 /* **************************************************************************************************** */
@@ -59,21 +58,28 @@ void b_printf( Block* this, u_int index ) {
 Block* b_setAdressNextEmpty ( Block* this, u_int adressNextEmpty ) {
 	if ( this == NULL )
 		return NULL;
-	if ( b_getData(this) != NULL )
-		free( this->data );
-	this->adressNextEmpty = adressNextEmpty;
+	b_setDataAt( this, 0, adressNextEmpty );
 	return this;
 }
 
-Block* b_setData ( Block* this, const octet_t* data, u_int offset ) {
-	// Ckecking
+Block* b_setDataAt ( Block* this, u_int index, octet_t value ) {
 	if ( this == NULL )
 		return NULL;
-	// Allocate data:
-	if ( this->data == NULL )
-		this->data = (octet_t*)malloc( offset );
+	this[ index ] = value;
+	return this;
+}
+
+Block* b_setData ( Block* this, const octet_t* data, u_int size_block ) {
+	if ( this == NULL )
+		return NULL;
 	// filling
-	memcpy( this->data, data, offset );
+	memcpy( this, data, size_block );
+	return this;
+}
+
+Block* b_setDataBetween( Block* this, const octet_t* data, u_int id_begin_in_block, u_int offset ) {
+	for ( u_int id = 0 ; id < offset ; ++id, ++id_begin_in_block )
+		b_setDataAt( this, id_begin_in_block, data[ id ] );
 	return this;
 }
 

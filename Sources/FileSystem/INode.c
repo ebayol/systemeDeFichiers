@@ -70,6 +70,10 @@ u_int in_getFileSize ( INode* this ) {
 	return this->file_size;
 }
 
+u_int in_getAdressNextEmpty( INode* this ) {
+	return in_getDirectBlockAdressAt( this, 0 );
+}
+
 const u_int* in_getDirectBlocksAdresses ( INode* this ) {
 	return this->directBlocksAdresses;
 }
@@ -116,6 +120,10 @@ INode* in_setNbLinks ( INode* this,u_int nb_links ) {
 INode* in_setFileSize ( INode* this,u_int file_size ) {
 	this->file_size = file_size;
 	return this;
+}
+
+INode* in_setAdressNextEmpty( INode* this, u_int adress ) {
+	return in_setDirectBlocksAdressAt( this, 0, adress );
 }
 
 INode* in_setDirectBlocksAdressAt ( INode* this, u_int index, u_int indexDirectBlock ) {

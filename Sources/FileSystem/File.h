@@ -23,7 +23,7 @@ void* f_readAt    ( void* data, u_int size, u_int count, FILE* ptrFile, u_int in
 
 SuperBlock* f_readSuperBlock ( FILE* ptrFile );
 INode*      f_readINodeAt    ( FILE* ptrFile, u_int index );
-Block*      f_readBlockAt    ( FILE* ptrFile, u_int index, u_int size_block );
+Block*      f_readBlockAt    ( FILE* ptrFile, u_int size_block, u_int index );
 
 
 /* **************************************************************************************************** */
