@@ -20,6 +20,7 @@
 typedef struct {
 	SuperBlock* ptrSuperblock;
 	FILE* ptrFile;
+	INode* ptrCurrentDirectory;
 }
 FileSystem;
 
@@ -28,7 +29,8 @@ FileSystem;
 /* **************************************************************************************************** */
 
 FileSystem* fs_AllocateEmpty ( void );
-FileSystem* fs_Allocate      ( u_int nb_blocks, u_int size_blocks, u_int nb_inodes, const char* diskName, bool format );
+FileSystem* fs_Allocate      ( const char* diskName );
+FileSystem* fs_AllocateNew   ( u_int nb_blocks, u_int size_blocks, u_int nb_inodes, const char* diskName );
 FileSystem* fs_Free          ( FileSystem* this );
 
 /* **************************************************************************************************** */
@@ -81,7 +83,7 @@ void fs_printf( FileSystem* this );
 /* ***                                          FILE  SYSTEM                                        *** */
 /* **************************************************************************************************** */
 
-FileSystem* fs_setSuperblock ( FileSystem* this, SuperBlock* ptrSuperblok );
+FileSystem* fs_setSuperBlock ( FileSystem* this, SuperBlock* ptrSuperblok );
 FileSystem* fs_setFile       ( FileSystem* this, FILE* ptrFile );
 
 /* **************************************************************************************************** */
@@ -117,8 +119,11 @@ FileSystem* fs_setFirstFreeInode ( FileSystem* this, u_int free_inodes );
 /* ***                                          UTILISTATION                                        *** */
 /* **************************************************************************************************** */
 
-INode* fs_reserveAndReturnFirstFreeINode( FileSystem* this );
-Block* fs_reserveAndReturnFirstFreeBlock( FileSystem* this );
+INode* fs_ReserveAndReturnFirstFreeINode( FileSystem* this, u_int* ptrIndexINode );
+Block* fs_ReserveAndReturnFirstFreeBlock( FileSystem* this, u_int* ptrIndexBlock );
+INode* fs_ReserveAndReturnNode( FileSystem* this, u_int* ptrIndexInode, bool useIndirectToo );
+
+FileSystem* fs_InitRootFolder( FileSystem* this );
 
 int fs_format( const char* path, u_int nb_blocks, u_int size_blocks, u_int nb_inodes );
 int fs_mount ( FileSystem* this, const char* path, u_int size_cache );
