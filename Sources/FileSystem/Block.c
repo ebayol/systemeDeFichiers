@@ -12,7 +12,7 @@
 /* **************************************************************************************************** */
 
 Block* b_Allocate ( u_int block_size ) {
-	return (Block*) malloc( sizeof(octet_t) * block_size );
+	return b_clear( (Block*) malloc( sizeof(octet_t) * block_size ), block_size );
 }
 
 Block* b_Free ( Block* this ) {
@@ -30,17 +30,11 @@ Block* b_Free ( Block* this ) {
 u_int b_getAdressNextEmpty ( Block* this ) {
 	if ( this == NULL )
 		return -1;
-	return b_getDataAt( this, 0 );
+	return atoi( b_getData( this ) );
 }
 
 const octet_t* b_getData ( Block* this ) {
-	if ( this == NULL )
-		return NULL;
 	return this;
-}
-
-octet_t b_getDataAt ( Block* this, u_int index ) {
-	return this[ index ];
 }
 
 /* **************************************************************************************************** */
@@ -49,38 +43,73 @@ octet_t b_getDataAt ( Block* this, u_int index ) {
 
 void b_printf( Block* this, u_int index ) {
 	printf( "[ %2d  Block             %10d octets ]\n", index, sizeof(this)/sizeof(octet_t) );
+	int id = 0;
+	int nb = 0;
+	while ( this[ id ] != '\0' ) {
+		if ( nb == 0 )
+			printf( "[ " );
+		else if ( nb == 40 ) {
+			printf( " ]\n" );
+			nb = 0;
+		}
+		else {
+			printf( "%c", this[ id ] );
+			++id;
+			++nb;
+		}
+	}
 }
 
 /* **************************************************************************************************** */
 /* ***                                            MUTATOR                                           *** */
 /* **************************************************************************************************** */
 
-Block* b_setAdressNextEmpty ( Block* this, u_int adressNextEmpty ) {
-	if ( this == NULL )
-		return NULL;
-	b_setDataAt( this, 0, adressNextEmpty );
+Block* b_clear( Block* this, u_int sizeBlock ) {
+	memset( this, '\0', sizeBlock );
 	return this;
 }
 
-Block* b_setDataAt ( Block* this, u_int index, octet_t value ) {
+Block* b_setAdressNextEmpty ( Block* this, u_int sizeBlock, u_int adressNextEmpty ) {
 	if ( this == NULL )
 		return NULL;
-	this[ index ] = value;
+	b_clear( this, sizeBlock );
+	itoa( this[0], adressNextEmpty, 10 );
 	return this;
 }
 
-Block* b_setData ( Block* this, const octet_t* data, u_int size_block ) {
-	if ( this == NULL )
-		return NULL;
-	// filling
-	memcpy( this, data, size_block );
-	return this;
+u_int b_append ( Block* this, u_int sizeBlock, const octet_t* data ) {
+	// interators:
+	int indiceInBlock = -1;
+	char carInBlock;
+	// place iterator on block end:
+	do {
+		++indiceInBlock;
+		carInBlock = this[ indiceInBlock ];
+	}
+	while( carInBlock!= '\0' );
+	// copie:
+	int indiceInStr = 0;
+	u_int nbCopy = 0;
+	while ( indiceInBlock < ( (int)sizeBlock - 1 ) || data[ indiceInStr ] != '\0' ) {
+		this[ indiceInBlock ] = data[ indiceInStr ];
+		++indiceInBlock;
+		++indiceInStr;
+		++nbCopy;
+	}
+	// add '\0':
+	this[ indiceInBlock ] = '\0';
+	// return
+	return nbCopy+1;
 }
 
-Block* b_setDataBetween( Block* this, const octet_t* data, u_int id_begin_in_block, u_int offset ) {
-	for ( u_int id = 0 ; id < offset ; ++id, ++id_begin_in_block )
-		b_setDataAt( this, id_begin_in_block, data[ id ] );
-	return this;
+int b_appendSubNode( Block* this, u_int sizeBlock, const char* name, u_int indexINode ) {
+	char* node = (char*) malloc( sizeof( char ) * 256 );
+	sprintf( node, "(\"%s\",%d)", name, indexINode );
+	int ret = -1;
+	if( b_append( this, sizeBlock, node ) == strlen( node ) )
+		ret = 0;
+	free( node );
+	return ret;
 }
 
 #endif /* FIN BLOCK_C */

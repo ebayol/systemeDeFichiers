@@ -55,21 +55,21 @@ print_args (int argc, char *argv[])
 }
 
 int 
-do_open (FileSystem * fs, int argc, char *argv[])
+do_open ( FileSystem* fs, int argc, char *argv[])
 {
     print_args (argc, argv);
     return 0;
 }
 
 int 
-do_close (FileSystem * fs, int argc, char *argv[])
+do_close ( FileSystem* fs, int argc, char *argv[] )
 {
     print_args (argc, argv);
     return 0;
 }
 
 int 
-do_stat (FileSystem * fs, int argc, char *argv[])
+do_stat ( FileSystem * fs, int argc, char *argv[] )
 {
     print_args (argc, argv);
     return 0;
@@ -99,16 +99,54 @@ do_unlink (FileSystem * fs, int argc, char *argv[])
 }
 
 int 
-do_cd (FileSystem * fs, int argc, char *argv[])
+do_cd ( FileSystem* fs, int argc, char* argv[] )
 {
-    print_args (argc, argv);
+    if ( argc != 1 )
+    	printf( "Usage : \"cd <rep>\"\n" );
+
+    INode* ptrINode = NULL;
+    u_int indexCurrentDir = fs_getCurrentDirectory( fs );
+    ptrINode = fs_FindINode( fs, argv[0], &indexCurrentDir );
+    if ( ptrINode != NULL ) {
+    	fs_setCurrentDirectory( fs, indexCurrentDir );
+    	in_Free( ptrINode );
+    }
+    else
+    	printf( "\"%s\" no such file or directory in current path\n" );
     return 0;
 }
 
 int 
 do_pwd (FileSystem * fs, int argc, char *argv[])
 {
-    print_args (argc, argv);
+	u_int repCurrent = fs_getCurrentDirectory( fs );
+
+	char* finalPath = (char*) malloc( sizeof( char ) );
+	finalPath[0] = '\0';
+
+    while ( getIndexOfNamedContent( fs, fs_readINodeAt( fs, fs_getCurrentDirectory( fs ) ), "." )
+    	 != getIndexOfNamedContent( fs, fs_readINodeAt( fs, fs_getCurrentDirectory( fs ) ), ".." )
+    ){
+    	u_int indexRepFils = fs_getCurrentDirectory( fs );
+
+    	char* to = "..";
+    	do_cd( fs, 1, &to );
+
+    	char* bufferName = (char*) malloc( sizeof( char ) * 256 );
+    	if( getNameOfIndexedContent( fs, fs_readINodeAt( fs, fs_getCurrentDirectory( fs ) ), bufferName ) != -1 ) {
+    		bufferName = realloc( bufferName, sizeof( char ) * ( strlen( finalPath ) + strlen( bufferName ) ) );
+    		strcat( bufferName, "/" );
+    		strcat( bufferName, finalPath );
+    		free( finalPath );
+    		finalPath = bufferName;
+    	}
+    	else
+    		free( bufferName );
+    }
+
+    printf( "/%s\n", finalPath );
+    free( finalPath );
+    fs_setCurrentDirectory( fs, repCurrent );
     return 0;
 }
 

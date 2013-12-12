@@ -5,6 +5,7 @@
 #define INCLUDES_H
 
 // Dependances standards:
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>

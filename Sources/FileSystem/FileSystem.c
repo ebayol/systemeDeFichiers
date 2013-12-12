@@ -15,6 +15,7 @@ FileSystem* fs_AllocateEmpty ( void ) {
 	FileSystem* this = (FileSystem*) malloc( sizeof( FileSystem ) );
 	fs_setSuperBlock( this, NULL );
 	fs_setFile( this, NULL );
+	fs_setCurrentDirectory( this, INDEX_INODE_ROOT );
 	return this;
 }
 
@@ -60,8 +61,8 @@ FileSystem* fs_AllocateNew ( u_int nb_blocks, u_int size_blocks, u_int nb_inodes
 		return fs_Free( ptrFileSystem );
 
 	// initiate 1rst free block and inode:
-	sb_setFirstFreeInode( ptrSuperblock, sizeof( SuperBlock ) );
-	sb_setFirstFreeBlock( ptrSuperblock, sizeof( SuperBlock ) + nb_inodes * sizeof( INode ) );
+	sb_setFirstFreeInode( ptrSuperblock, INDEX_INODE_ROOT );
+	sb_setFirstFreeBlock( ptrSuperblock, INDEX_INODE_ROOT + nb_inodes * sizeof( INode ) );
 
 	// write superblock
 	fs_setSuperBlock( ptrFileSystem, ptrSuperblock );
@@ -74,7 +75,6 @@ FileSystem* fs_AllocateNew ( u_int nb_blocks, u_int size_blocks, u_int nb_inodes
 	// Checking
 	if ( ptrFile == NULL )
 		return fs_Free( ptrFileSystem );
-
 	return fs_setFile( ptrFileSystem, ptrFile );
 }
 
@@ -104,6 +104,12 @@ FILE* fs_getFile ( FileSystem* this ) {
 	return this->ptrFile;
 }
 
+u_int fs_getCurrentDirectory ( FileSystem* this ) {
+	if ( this == NULL )
+		return 0;
+	return this->indexCurrentDirectory;
+}
+
 /* **************************************************************************************************** */
 /* ***                                            ACCESSOR                                          *** */
 /* ***                                              FILE                                            *** */
@@ -125,7 +131,7 @@ INode* fs_readINodeAt ( FileSystem* this, u_int index ) {
 Block* fs_readBlockAt ( FileSystem* this, u_int index ) {
 	if ( this == NULL || fs_getFile( this ) == NULL )
 		return NULL;
-	return f_readBlockAt( fs_getFile( this ), index, fs_getSizeBlocks( this ) );
+	return f_readBlockAt( fs_getFile( this ), fs_getSizeBlocks( this ), index );
 }
 
 /* **************************************************************************************************** */
@@ -191,7 +197,7 @@ void fs_printf( FileSystem* this ) {
 
 	// Affichage du superblock:
 	sb_printf( fs_getSuperBlock( this ) );
-	indiceInFile += sizeof( SuperBlock );
+	indiceInFile += INDEX_INODE_ROOT;
 
 	// Affichage des INodes:
 	INode* ptrINode = NULL;
@@ -233,12 +239,19 @@ FileSystem* fs_setFile ( FileSystem* this, FILE* ptrFile ) {
 	return this;
 }
 
+FileSystem* fs_setCurrentDirectory ( FileSystem* this, u_int indexINode ) {
+	if ( this != NULL ) {
+		this->indexCurrentDirectory = indexINode;
+	}
+	return this;
+}
+
 /* **************************************************************************************************** */
 /* ***                                            MUTATORS                                          *** */
 /* ***                                              FILE                                            *** */
 /* **************************************************************************************************** */
 
-FileSystem* fs_saveSuperblock( FileSystem* this ) {
+FileSystem* fs_saveSuperBlock( FileSystem* this ) {
 	if ( fs_getFile(this) == NULL )
 		return this;
 	f_writeSuperblock( fs_getSuperBlock( this ), fs_getFile( this ) );
@@ -315,6 +328,7 @@ FileSystem* fs_setFirstFreeInode ( FileSystem* this, u_int free_inodes ) {
 
 /* **************************************************************************************************** */
 /* ***                                          UTILISTATION                                        *** */
+/* ***                                   RESERVE INODES AND BLOCKS                                  *** */
 /* **************************************************************************************************** */
 
 
@@ -382,16 +396,61 @@ INode* fs_ReserveAndReturnNode( FileSystem* this, u_int* ptrIndexInode, bool use
 	return ptrINode;
 }
 
-INode* OpenRootINode( FileSystem* this, u_int* indexINode ) {
-	*indexINode = sizeof( SuperBlock );
-	return fs_readINodeAt( this, sizeof( SuperBlock ) );
+/* **************************************************************************************************** */
+/* ***                                          UTILISTATION                                        *** */
+/* ***                                    FREE INODES AND BLOCKS                                    *** */
+/* **************************************************************************************************** */
+
+void fs_FreeInode ( FileSystem* this, INode* ptrINode, u_int indexINode ) {
+
+	// Free direct blocks:
+	for ( u_int id_block ; id_block < NB_DIRECT_BLOCKS ; ++id_block ) {
+		u_int index_block = in_getDirectBlockAdressAt( ptrINode, id_block );
+		if (index_block != 0)
+			fs_FreeBlock ( this, fs_readBlockAt( this, index_block ), index_block );
+	}
+	// Free indirect Blocks:
+	for ( u_int id_block ; id_block < NB_DIRECT_BLOCKS ; ++id_block ) {
+		u_int index_block = in_getIndirectBlocksAdressAt( ptrINode, id_block );
+		if (index_block != 0)
+			fs_FreeBlock ( this, fs_readBlockAt( this, index_block ), index_block );
+	}
+	// Insert inode in free inodes list
+	u_int adressFirstFree = fs_getFirstFreeInode( this );
+	in_setAdressNextEmpty( ptrINode, adressFirstFree );
+	// Save inode modifications
+	fs_saveINodeAt ( this, indexINode, ptrINode );
+	in_Free(ptrINode);
+	// Modify superblock
+	fs_setFirstFreeInode( this, indexINode );
+	// Save SuperBlock
+	fs_saveSuperBlock(this);
 }
 
-Block* OpenRootBlock( FileSystem* this, u_int* indexBlock ) {
+void fs_FreeBlock ( FileSystem* this, Block* ptrBlock, u_int indexBlock ) {
+	u_int adressFirstFree = fs_getFirstFreeBlock( this );
+	b_setAdressNextEmpty( ptrBlock, fs_getSizeBlocks( this ), adressFirstFree );
+	fs_saveBlockAt ( this, indexBlock, ptrBlock );
+	b_Free(ptrBlock);
+	fs_setFirstFreeInode( this, indexBlock );
+	fs_saveSuperBlock(this);
+}
+
+/* **************************************************************************************************** */
+/* ***                                          UTILISTATION                                        *** */
+/* ***                                         ROOT MANAGEMENT                                      *** */
+/* **************************************************************************************************** */
+
+INode* fs_OpenRootINode( FileSystem* this, u_int* indexINode ) {
+	*indexINode = INDEX_INODE_ROOT;
+	return fs_readINodeAt( this, *indexINode );
+}
+
+Block* fs_OpenRootBlock( FileSystem* this, u_int* indexBlock ) {
 
 	// open root inode:
 	u_int indexINodeRoot = 0;
-	INode* ptrINodeRoot = OpenRootINode( this, &indexINodeRoot );
+	INode* ptrINodeRoot = fs_OpenRootINode( this, &indexINodeRoot );
 
 	// open it's block
 	*indexBlock = in_getDirectBlockAdressAt( ptrINodeRoot, 0 );
@@ -400,12 +459,6 @@ Block* OpenRootBlock( FileSystem* this, u_int* indexBlock ) {
 	in_Free( ptrINodeRoot );
 
 	return fs_readBlockAt( this, *indexBlock );
-}
-
-INode* fs_GoToFile( FileSystem* this, const char* path, u_int* indexINode ) {
-
-	//
-
 }
 
 FileSystem* fs_InitRootFolder( FileSystem* this ) {
@@ -427,16 +480,150 @@ FileSystem* fs_InitRootFolder( FileSystem* this ) {
 	fs_saveINodeAt( this, adressINodeRoot, ptrINode );
 
 	// Set root block and save it:
-	char* entry = (char*) calloc( sizeof(char), 256 );
-	sprintf ( entry, "(\".\",%d)(\"..\",%d)", adressINodeRoot, adressINodeRoot );
-	b_setDataBetween( ptrBlock, entry, 0, strlen( entry ) );
-	free( entry );
 
+	b_appendSubNode( ptrBlock, fs_getSizeBlocks( this ), ".", adressINodeRoot );
+	b_appendSubNode( ptrBlock, fs_getSizeBlocks( this ), "..", adressINodeRoot );
 	fs_saveBlockAt( this, indexBlockRoot, ptrBlock );
-	fs_saveSuperblock( this );
+	fs_saveSuperBlock( this );
 
 	return this;
 }
+
+/* **************************************************************************************************** */
+/* ***                                          UTILISTATION                                        *** */
+/* ***                                        CONTENT MANAGEMENT                                      *** */
+/* **************************************************************************************************** */
+
+int fs_isContentInINode( FileSystem* this, INode* ptrINode, const char* content, Block* ptrBlockFound ) {
+
+	char* occurence = NULL;
+	Block* ptrBlock = NULL;
+	int res = -1;
+	ptrBlockFound = NULL;
+
+	for ( u_int id_block = 0 ; res == -1 && id_block < NB_DIRECT_BLOCKS ; ++id_block ) {
+		ptrBlock = fs_readBlockAt( this, in_getDirectBlockAdressAt( ptrINode, id_block ) );
+		occurence = strstr( b_getData( ptrBlock ), content );
+		b_Free( ptrBlock );
+		if( occurence != NULL ) {
+			res = occurence - b_getData( ptrBlock );
+			ptrBlockFound = ptrBlock;
+		}
+		else
+			b_Free( ptrBlock );
+	}
+	for ( u_int id_block = 0 ; res == -1 && id_block < NB_INDIRECT_BLOCKS ; ++id_block ) {
+		ptrBlock = fs_readBlockAt( this, in_getIndirectBlocksAdressAt( ptrINode, id_block ) );
+		occurence = strstr( b_getData( ptrBlock ), content );
+		if( occurence != NULL ) {
+			res = occurence - b_getData( ptrBlock );
+			ptrBlockFound = ptrBlock;
+		}
+		else
+			b_Free( ptrBlock );
+	}
+	return res;
+}
+
+int getIndexOfNamedContent( FileSystem* this, INode* ptrINode, const char* contentName ) {
+
+	if ( this == NULL || ptrINode == NULL )
+		return -1;
+
+	// check if current
+	Block* ptrBlock = NULL;
+	int indexInBlock = fs_isContentInINode( this, ptrINode, contentName, ptrBlock );
+
+	if ( ptrBlock != NULL ) {
+		u_int indexDebut = indexInBlock + strlen( contentName ) + 2;
+		const char* debutChiffre = b_getData( ptrBlock ) + indexDebut;
+		char* finChiffre   = strstr( b_getData( ptrBlock ) + indexInBlock + 2, ")" ) - 1;
+		u_int lenChiffre = finChiffre - debutChiffre;
+
+		char* strChiffre = (char*) malloc( sizeof(char)*lenChiffre + 1 );
+		strncpy( strChiffre, debutChiffre, lenChiffre );
+		int chiffre = atoi( strChiffre );
+		free( strChiffre );
+		return chiffre;
+	}
+	return -1;
+}
+
+int getNameOfIndexedContent( FileSystem* this, INode* ptrINode, u_int indexRef, char* destName ) {
+
+	// get index string representation:
+	destName = itoa( indexRef, destName, 10 );
+	// find corresponding block and index in block, in the inode
+	Block* ptrBlock = NULL;
+	int indexInBlock = fs_isContentInINode( this, ptrINode, destName, ptrBlock );
+	// if not found:
+	if ( ptrBlock == NULL ) {
+		destName[0] = '\0';
+		return -1;
+	}
+
+	int indexNameEnd = indexInBlock - 2;
+	int indexNameBegin = indexNameEnd;
+	while ( ptrBlock[indexNameBegin] != '"' ) --indexNameBegin;
+
+	strncpy( destName, ptrBlock + indexNameBegin, indexNameEnd-indexNameBegin );
+	return indexNameBegin;
+}
+
+INode* fs_FindINode( FileSystem* this, char* path, u_int* indexINode ) {
+
+	// if path start with '/' go to root:
+	if ( path[0] == '/' ) {
+		*indexINode = sizeof( SuperBlock );
+		return fs_FindINode( this, path+1, indexINode );
+	}
+
+	// Open current inode
+	INode* ptrINodeCurrent = fs_readINodeAt( this, *indexINode );
+
+	// check for final path
+	const char* indexSlash = strstr( path, "/" );
+	char* restOfPath = NULL;
+
+	// trunc
+	if ( indexSlash != NULL ) { // last iteration
+		restOfPath = (char*) malloc( sizeof(char) * ( strlen( path ) - strlen( indexSlash ) ) );
+		strncpy( restOfPath, indexSlash + 1, strlen( indexSlash ) - 1 );
+		path[ indexSlash - path ] = '\0';
+	}
+
+	// check if current
+	Block* ptrBlock = NULL;
+	int indexInBlock = fs_isContentInINode( this, ptrINodeCurrent, path, ptrBlock );
+
+	if ( ptrBlock != NULL ) {
+
+		u_int indexDebut = indexInBlock + strlen( path ) + 2;
+		const char* debutChiffre = b_getData( ptrBlock ) + indexDebut;
+		char* finChiffre   = strstr( b_getData( ptrBlock ) + indexInBlock + 2, ")" ) - 1;
+		u_int lenChiffre = finChiffre - debutChiffre;
+
+		char* strChiffre = (char*) malloc( sizeof(char)*lenChiffre + 1 );
+		strncpy( strChiffre, debutChiffre, lenChiffre );
+		int chiffre = atoi( strChiffre );
+		free( strChiffre );
+
+		*indexINode = chiffre;
+		if ( indexSlash == NULL )
+			return fs_readINodeAt( this, *indexINode );
+		else {
+			INode* ptrINodeRes = fs_FindINode( this, restOfPath, indexINode );
+			free( restOfPath );
+			return ptrINodeRes;
+		}
+	}
+	return NULL;
+}
+
+/* **************************************************************************************************** */
+/* ***                                          UTILISTATION                                        *** */
+/* ***                                            USER SIDE                                         *** */
+/* **************************************************************************************************** */
 
 int fs_format( const char* discName, u_int nb_blocks, u_int size_blocks, u_int nb_inodes ) {
 
@@ -449,7 +636,7 @@ int fs_format( const char* discName, u_int nb_blocks, u_int size_blocks, u_int n
 	u_int indiceInFile = 0;
 
 	// Sauvergare du superblock:
-	fs_saveSuperblock( prtFileSystem );
+	fs_saveSuperBlock( prtFileSystem );
 	indiceInFile += sizeof( SuperBlock );
 
 	// Initialisation des INodes:
@@ -468,9 +655,9 @@ int fs_format( const char* discName, u_int nb_blocks, u_int size_blocks, u_int n
 	Block* ptrBlock = b_Allocate( size_blocks );
 	for ( u_int id_block = 0 ; id_block < nb_blocks ; ++id_block ) {
 		if ( id_block < nb_blocks - 1 )
-			b_setAdressNextEmpty( ptrBlock, indiceInFile + size_blocks * sizeof( octet_t ) );
+			b_setAdressNextEmpty( ptrBlock, size_blocks, indiceInFile + size_blocks * sizeof( octet_t ) );
 		else
-			b_setAdressNextEmpty( ptrBlock, 0 );
+			b_setAdressNextEmpty( ptrBlock, size_blocks, 0 );
 		fs_saveBlockAt( prtFileSystem, indiceInFile, ptrBlock );
 	}
 	b_Free( ptrBlock );
@@ -482,6 +669,7 @@ int fs_format( const char* discName, u_int nb_blocks, u_int size_blocks, u_int n
 
 int fs_mount ( FileSystem* this, const char* path, u_int size_cache ) {
 	this = fs_Allocate( path );
+	fs_setCurrentDirectory( this, INDEX_INODE_ROOT );
 	if ( this == NULL )
 		return -1;
 	return 0;
@@ -490,8 +678,6 @@ int fs_mount ( FileSystem* this, const char* path, u_int size_cache ) {
 int fs_umount( FileSystem* this ) {
 	return ( fs_Free( this ) == NULL ) ? -1 : 0;
 }
-
-
 
 #endif /* FIN FILE SYSTEM */
 /* #################################################################################################### */

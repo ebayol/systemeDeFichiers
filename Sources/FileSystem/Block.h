@@ -26,7 +26,6 @@ Block* b_Free     ( Block* this );
 
 u_int b_getAdressNextEmpty ( Block* this );
 const octet_t* b_getData   ( Block* this );
-octet_t        b_getDataAt ( Block* this, u_int id );
 
 
 /* **************************************************************************************************** */
@@ -39,9 +38,9 @@ void b_printf ( Block* this, u_int index );
 /* ***                                            MUTATOR                                           *** */
 /* **************************************************************************************************** */
 
-Block* b_setAdressNextEmpty ( Block* this, u_int adressNextEmpty );
-Block* b_setDataAt          ( Block* this, u_int index, octet_t value );
-Block* b_setData            ( Block* this, const octet_t* data, u_int size_block );
-Block* b_setDataBetween     ( Block* this, const octet_t* data, u_int id_begin_in_block, u_int offset );
+Block* b_clear              ( Block* this, u_int sizeBlock );
+Block* b_setAdressNextEmpty ( Block* this, u_int sizeBlock, u_int adressNextEmpty );
+u_int  b_append             ( Block* this, u_int sizeBlock, const octet_t* data );
+int    b_appendSubNode      ( Block* this, u_int sizeBlock, const char* name, u_int indexINode );
 #endif /* FIN BLOCK_H */
 /* #################################################################################################### */
